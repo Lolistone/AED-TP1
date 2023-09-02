@@ -160,7 +160,7 @@ Si se pone un label al \verb|lstlisting|, se puede referenciar: Código \ref{cod
 
 \subsection{Ejercicio 2}
 
-\begin{proc}{nombre}{\In escrutinio\_presidencial : \TLista{\ent}, \In escrutinio\_senadores : \TLista{\ent}, \In escrutinio\_diputados : \TLista{\ent}}{Bool}
+\begin{proc}{hayFraude}{\In escrutinio\_presidencial : \TLista{\ent}, \In escrutinio\_senadores : \TLista{\ent}, \In escrutinio\_diputados : \TLista{\ent}}{Bool}
 	%    \modifica{parametro1, parametro2,..}
 	\requiere{|escrutinio\_presidenciales| > 2 \land |escrutinio\_senadores| > 2 \land |escrutinio\_diputados| > 2 \yLuego \\ totalVotos(escrutinio\_presidencial) > 0 \land totalVotos(escrutinio\_senadores) > 0 \land \\ totalVotos(escrutinio\_diputados) > 0 }
 	\asegura{res = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados)}
