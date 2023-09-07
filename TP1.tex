@@ -4,13 +4,13 @@
 \usepackage{caratula} % Version modificada para usar las macros de algo1 de ~> https://github.com/bcardiff/dc-tex
 
 
-\titulo{Descripci\'on del tp}
-\subtitulo{Subtítulo del tp}
+\titulo{Trabajo Práctico 1}
+\subtitulo{Especificación y Weakest Precondition}
 
 \fecha{\today}
 
-\materia{Materia de la carrera}
-\grupo{Grupo 42}
+\materia{Algoritmos y Estructuras de Datos}
+\grupo{swifties}
 
 \integrante{Apellido, Nombre1}{001/01}{email1@dominio.com}
 \integrante{Apellido, Nombre2}{002/01}{email2@dominio.com}
@@ -26,10 +26,6 @@
 
 \maketitle
 
-\section{Especificación}
-\subsection{Subsección: ambientes comunes de \LaTeX}
-
-Lo principal: las fórmulas. Se puede poner en una linea, como $x_i = x_{i-1} + x_{i-2}$, o ponerse más grande:
 
 \begin{equation}
 	\sum\limits_{i=0}^{n} i
@@ -143,28 +139,53 @@ Si se pone un label al \verb|lstlisting|, se puede referenciar: Código \ref{cod
 \pred{predSuelto}{parametros}{\paraTodo[unalinea]{variable}{tipo}{algo \implicaLuego expresion}}
 \pred{predSuelto}{parametros}{\existe[unalinea]{variable}{tipo}{algo \yLuego expresion}}
 
+\section{Especificación}
+
+Para realizar esta primer parte consideramos que un escrutinio válido tiene las siguientes características:
+\begin{enumerate} \setlength\itemsep{0cm}
+	\item Contiene los votos de al menos dos partidos.
+	\item En la última posición están los votos en blanco.
+	\item No hay empate entre partidos.
+	\item Los votos son numeros mayores o iguales a 0.
+\end{enumerate}
+
+Los predicados y auxiliares utilizados están definidos al final de la sección.
+
 \subsection{Ejercicio 1}
 
 \begin{proc}{hayBallotage}{\In escrutinio : \TLista{\ent}}{Bool}
 	%    \modifica{parametro1, parametro2,..}
-	\requiere{|escrutinio| > 2 \yLuego totalVotos(escrutinio) > 0 \yLuego noHayEmpate(escrutinio)}
+	\requiere{escrutinioValido(escrutinio)}
 	\asegura{res = True \longleftrightarrow \neg (\existe[unalinea]{!i}{\ent}{0 \leq i < |escrutinio| - 1 \yLuego porcentaje(i, escrutinio)  > 45} \lor \\
 		     (\paraTodo[unalinea]{j,k}{\ent}{0 \leq j,k < |escrutinio| - 1  \yLuego porcentaje(j, escrutinio) > 40  \implicaLuego \\
 		     porcentaje(j, escrutinio) - porcentaje(k, escrutinio) > 10}))}
 \end{proc}
-\vspace{0.3cm}
-
-\aux{porcentaje}{\In partido : {\ent}, \In escrutinio : \TLista{\ent}}{\ent}{(escrutinio[partido] * 100) / totalVotos(escrutinio)}
-\aux{totalVotos}{\In escrutinio : \TLista{\ent}}{\ent}{\sum\limits_{i=0}^{|escrutinio|-1} escrutinio[i]}
-\pred{noHayEmpate}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i,j < |escrutinio| - 1  \land i \neq j  \implicaLuego escrutinio[i] \neq escrutinio[j] }}
 
 \subsection{Ejercicio 2}
 
 \begin{proc}{hayFraude}{\In escrutinio\_presidencial : \TLista{\ent}, \In escrutinio\_senadores : \TLista{\ent}, \In escrutinio\_diputados : \TLista{\ent}}{Bool}
 	%    \modifica{parametro1, parametro2,..}
-	\requiere{|escrutinio\_presidenciales| > 2 \land |escrutinio\_senadores| > 2 \land |escrutinio\_diputados| > 2 \yLuego \\ totalVotos(escrutinio\_presidencial) > 0 \land totalVotos(escrutinio\_senadores) > 0 \land \\ totalVotos(escrutinio\_diputados) > 0 }
+	\requiere{escrutinioValido(escrutinio\_presidencial) \land escrutinioValido(escrutinio\_senadores) \\ \land escrutinioValido(escrutinio\_presidencial) }
 	\asegura{res = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados)}
 \end{proc}
+
+\subsection{Ejercicio 3}
+
+\begin{proc}{nombre}{\In paramIn : \nat, \Inout paramInout : \TLista{\ent}}{tipoRes}
+	%    \modifica{parametro1, parametro2,..}
+	\requiere{expresionBooleana1}
+	\asegura{expresionBooleana2}
+	\aux{auxiliar1}{parametros}{tipoRes}{expresion}
+	\pred{pred1}{parametros}{expresion} 
+\end{proc}
+
+\subsection{Predicados y Auxiliares}
+
+\aux{porcentaje}{\In partido : {\ent}, \In escrutinio : \TLista{\ent}}{\ent}{(escrutinio[partido] * 100) / totalVotos(escrutinio)}
+\aux{totalVotos}{\In escrutinio : \TLista{\ent}}{\ent}{\sum\limits_{i=0}^{|escrutinio|-1} escrutinio[i]}
+\pred{noHayEmpate}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i,j < |escrutinio| - 1  \land i \neq j  \implicaLuego escrutinio[i] \neq escrutinio[j] }}
+\pred{votosValidos}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| \implicaLuego escrutinio[i] \geq 0 }}
+\pred{escrutinioValido}{\In escrutinio : \TLista{\ent}}{|escrutinio| > 2 \land noHayEmpate(escrutinio) \land votosValidos(escrutinio)}
 
 
 \end{document}
