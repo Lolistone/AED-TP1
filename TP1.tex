@@ -140,7 +140,6 @@ Si se pone un label al \verb|lstlisting|, se puede referenciar: Código \ref{cod
 \pred{predSuelto}{parametros}{\existe[unalinea]{variable}{tipo}{algo \yLuego expresion}}
 
 \section{Especificación}
-
 Para realizar esta primer parte consideramos que un escrutinio válido tiene las siguientes características:
 \begin{enumerate} \setlength\itemsep{0cm}
 	\item Contiene los votos de al menos dos partidos.
@@ -149,7 +148,9 @@ Para realizar esta primer parte consideramos que un escrutinio válido tiene las
 	\item Los votos son numeros mayores o iguales a 0.
 \end{enumerate}
 
-Los predicados y auxiliares utilizados están definidos al final de la sección.
+Los predicados y auxiliares utilizados están definidos al final de la sección. \\
+
+(esto no se si ponerlo o no pero quedaba lindo ¿) 
 
 \subsection{Ejercicio 1}
 
@@ -171,21 +172,50 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 
 \subsection{Ejercicio 3}
 
-\begin{proc}{nombre}{\In paramIn : \nat, \Inout paramInout : \TLista{\ent}}{tipoRes}
+\begin{proc}{obtenerSenadoresEnProvincia}{\In escrutinio : \TLista{\ent}}{$\ent \times \ent$}
 	%    \modifica{parametro1, parametro2,..}
-	\requiere{expresionBooleana1}
-	\asegura{expresionBooleana2}
-	\aux{auxiliar1}{parametros}{tipoRes}{expresion}
-	\pred{pred1}{parametros}{expresion} 
+	\requiere{escrutinioValido(escrutinio)}
+	\asegura{(0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0} \land 
+	i \neq res_{1} \implicaLuego \\ escrutinio[i] < escrutinio[res_{1}] < escrutinio[res_{0}]}} 
+\end{proc}
+
+\subsection{Ejercicio 4}
+
+\begin{proc}{calcularDHontEnProvincia}{\In cant\_bancas : \ent, \In escrutinio : \TLista{\ent}}{\TLista{\TLista{\ent}}}
+	%    \modifica{parametro1, parametro2,..}
+	\requiere{cant\_bancas > 0 \land escrutinioValido(escrutinio)}
+	\asegura{esMatriz(res) \yLuego |res| = |escrutinio| - 1 \yLuego |res[0]| = cant\_bancas \yLuego \\
+	\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |res| \land 0 \leq j < |res[0]| \implicaLuego res[i][j] =  escrutinio[i]/(j + 1)}}
+\end{proc}
+
+\subsection{Ejercicio 5}
+
+\begin{proc}{obtenerDiputadosEnProvincia}{\In cant\_bancas : \ent, \In DHont : \TLista{\TLista{\ent}}}{\TLista{\ent}}
+	%    \modifica{parametro1, parametro2,..}
+	\requiere{esMatriz(DHont) \yLuego cocientesDistintos(DHont) \land cant\_bancas > 0}
+	\asegura{|res| = |DHont| \yLuego \\ \paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \implicaLuego res[i] = \sum\limits_{j=0}^{|DHont[0]|} \IfThenElse{cant\_bancas > cocientesMayores(DHont[i][j], DHont)}{1}{0}}}
+\end{proc}
+
+\subsection{Ejercicio 6}
+
+\begin{proc}{validarListasDiputadosEnProvincia}{\In cant\_bancas : \ent, \In listas : \TLista{\TLista{dni : \ent \times genero : \ent}}}{Bool}
+	%    \modifica{parametro1, parametro2,..}
+	\requiere{cant\_bancas > 0}
+	\asegura{res = True \longleftrightarrow \\ \paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| - 1 \yLuego listas[i][j]_{1} = 1 \implicaLuego  listas[i][j+1]_{1} = 2 } \land \\  \paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| - 1 \yLuego listas[i][j]_{1} = 2 \implicaLuego  listas[i][j+1]_{1} = 1 }}
 \end{proc}
 
 \subsection{Predicados y Auxiliares}
 
 \aux{porcentaje}{\In partido : {\ent}, \In escrutinio : \TLista{\ent}}{\ent}{(escrutinio[partido] * 100) / totalVotos(escrutinio)}
+\aux{cocientesMayores}{\In cociente : {\ent}, \In DHont : \TLista{\TLista{\ent}}}{\ent}{\sum\limits_{j=0}^{|DHont[0]|} \sum\limits_{i=0}^{|DHont|} \IfThenElse{DHont[i][j] > cociente}{1}{0}}
 \aux{totalVotos}{\In escrutinio : \TLista{\ent}}{\ent}{\sum\limits_{i=0}^{|escrutinio|-1} escrutinio[i]}
 \pred{noHayEmpate}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i,j < |escrutinio| - 1  \land i \neq j  \implicaLuego escrutinio[i] \neq escrutinio[j] }}
 \pred{votosValidos}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| \implicaLuego escrutinio[i] \geq 0 }}
 \pred{escrutinioValido}{\In escrutinio : \TLista{\ent}}{|escrutinio| > 2 \land noHayEmpate(escrutinio) \land votosValidos(escrutinio)}
+\pred{esMatriz}{\In matriz : \TLista{\TLista{\ent}}}{|matriz| > 0 \yLuego |matriz[0]|>0 \land \paraTodo[unalinea]{i}{\ent}{0 \leq i < |matriz| \implicaLuego |matriz[i]| = |matriz[0]|}}
+\pred{cocientesDistintos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |DHont| \land 0 \leq j, r < |DHont[0]| \land i \neq k \land j \neq r \implicaLuego 
+DHont[i][j] \neq DHont[k][r]}}
 
+\section{Implemetaciones y demostraciones de correctitud}
 
 \end{document}
