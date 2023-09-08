@@ -28,17 +28,12 @@
 
 \section{Especificación}
 
-\noindent Para realizar esta primer parte consideramos que un escrutinio válido tiene las siguientes características:
+\noindent Algunas consideraciones que tuvimos al especificar:
 \begin{enumerate} \setlength\itemsep{0cm}
-	\item Contiene los votos de al menos dos partidos.
-	\item En la última posición están los votos en blanco.
-	\item No hay empate entre partidos.
-	\item Los votos son numeros mayores o iguales a 0.
-\end{enumerate}
-Otras consideraciones que tuvimos fueron que:
-\begin{enumerate} \setlength\itemsep{0cm}
-	\item La matriz DHont tiene todos sus cocientes positivos y distintos.
-	\item En las listas representamos a hombres con el 1 y mujeres con el 2.
+	\item Un escrutinio tiene al menos dos partidos, y en la ultima posicion estan los votos en blanco.
+	\item Tanto en el escrutinio como en la matriz DHont no hay repetidos.
+	\item Los votos en el escrutinio y los cocientes de la matriz son numeros mayores o iguales a 0.
+	\item En las listas de los partidos representamos a hombres con el 1 y mujeres con el 2.
 \end{enumerate}
 Los predicados y auxiliares utilizados están definidos al final de la sección. \\
 
@@ -115,5 +110,103 @@ DHont[i][j] \neq DHont[k][r]}}
 \pred{generosValidos}{\In Listas : \TLista{\TLista{\ent \times \ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| \implicaLuego listas[i][j]_{1} = 1 \lor  listas[i][j]_{1} = 2}}
 
 \section{Implemetaciones y demostraciones de correctitud}
+
+\subsection{Implementación de hayBallotage}
+
+	\begin{lstlisting}[caption={},label=code:for]
+i := 0;
+totalVotos := 0;
+while (i < escrutinio.size()) do
+	totalVotos := totalVotos + escrutinio[i];
+	i := i + 1
+endwhile
+primero := 0;
+segundo := 0;
+j := 0;
+while (i < escrutinio.size() - 1) do
+	if (escrutinio[j] > primero) then
+		segundo := primero;
+		primero := escrutinio[j];
+	else
+		if (primero > escrutinio[j] && escrutinio[j] > segundo) then
+			segundo := escrutinio[j];
+		else
+			skip;
+		endif
+	endif
+	j := j + 1
+endwhile
+primero := (primero/totalVotos)*100
+segundo :=  (segundo/totalVotos)*100
+diferencia := primero - segundo
+res :=  (primero <= 45 || segundo > 45) && (primero < 40 || diferencia <= 10) 
+	\end{lstlisting}
+
+\subsection{Implementación de hayFraude}
+
+	\begin{lstlisting}[caption={},label=code:for]
+i := 0;
+total_presidencial := 0;
+while (i < escrutinio_presidencial.size()) do
+	total_presidencial := total_presidencial + escrutinio_presidencial[i];
+	i := i + 1
+endwhile
+j := 0;
+total_senadores := 0;
+while (j < escrutinio_senadores.size()) do
+	total_senadores := total_senadores + escrutinio_senadores[i];
+	j := j + 1
+endwhile
+k := 0;
+total_diputados := 0;
+while (k < escrutinio_diputados.size()) do
+	total_diputados := total_diputados + total_diputados[i];
+	k := k + 1
+endwhile
+res := (total_presidencial = total_senadores) && (total_senadores = total_diputados)
+	\end{lstlisting}
+
+\subsection{Implementación de obtenerSenadoresEnProvincia}
+
+	\begin{lstlisting}[caption={},label=code:for]
+primero := 0;
+segundo := 0;
+i := 0;
+while (i < escrutinio.size() - 1) do
+	if (escrutinio[i] > escrutinio[primero]) then
+		segundo := primero;
+		primero := i;
+	else
+		if (escrutinio[primero] > escrutinio[i] && escrutinio[i] > escrutinio[segundo]) then
+			segundo := i;
+		else
+			skip;
+		endif
+	endif
+	i := i + 1
+endwhile
+res := (primero, segundo)
+	\end{lstlisting}
+
+\subsection{Implementacion validarListasDiputadosEnProvincia}
+
+	\begin{lstlisting}[caption={},label=code:for]
+i := 0;
+res := True
+while (i < listas.size() - 1) do
+	res := res && |listas[i]| = |listas[i+1]|
+endwhile
+while (j < listas.size()) do
+	while (k < listas[j].size() - 1) do
+		res := res && listas[j][k][1] != listas[j][k+1][1]
+		k := k + 1
+	endwhile
+	j := j +1
+endwhile
+	\end{lstlisting}
+
+\subsection{Demostracion de correctitud de hayFraude}
+
+\subsection{Demostracion de correctitud de obtenerSenadoresEnProvincia}
 
 \end{document}
