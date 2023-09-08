@@ -49,7 +49,7 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 	\requiere{escrutinioValido(escrutinio)}
 	\asegura{res = True \longleftrightarrow \neg ((\paraTodo[unalinea]{j,k}{\ent}{0 \leq j,k < |escrutinio| - 1  \yLuego porcentaje(j, escrutinio) > 40  	\implicaLuego \\
 		   	porcentaje(j, escrutinio) - porcentaje(k, escrutinio) > 10}) \lor \\
-		  	\existe[unalinea]{i}{\ent}{\paraTodo[unalinea]{j}{\ent}{0 \leq i,j < |escrutinio| - 1 \yLuego porcentaje(i, escrutinio)  > 45 \implicaLuego i \neq j}})}
+		  	\existe[unalinea]{i}{\ent}{\paraTodo[unalinea]{j}{\ent}{0 \leq i,j < |escrutinio| - 1 \yLuego porcentaje(i, escrutinio)  > 45 \land i \neq j  \implicaLuego \\ porcentaje(j, escrutinio) \leq 45}})}
 \end{proc}
 
 \subsection{Ejercicio 2}
