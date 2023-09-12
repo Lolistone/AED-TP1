@@ -32,7 +32,9 @@
 \begin{enumerate} \setlength\itemsep{0cm}
 	\item Un escrutinio tiene al menos dos partidos, y en la ultima posicion estan los votos en blanco.
 	\item Tanto en el escrutinio como en la matriz DHont no hay repetidos.
+	\item Los escrutinios en hayFraude tienen la misma longitud.
 	\item Los votos en el escrutinio y los cocientes de la matriz son numeros mayores o iguales a 0.
+	\item En la matriz DHont los partidos que no pasaron el umbral estaran representados como una lista vacia.
 	\item En las listas de los partidos representamos a hombres con el 1 y mujeres con el 2.
 \end{enumerate}
 Los predicados y auxiliares utilizados están definidos al final de la sección. \\
@@ -51,7 +53,8 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 
 \begin{proc}{hayFraude}{\In escrutinio\_presidencial : \TLista{\ent}, \In escrutinio\_senadores : \TLista{\ent}, \In escrutinio\_diputados : \TLista{\ent}}{Bool}
 	%    \modifica{parametro1, parametro2,..}
-	\requiere{escrutinioValido(escrutinio\_presidencial) \land escrutinioValido(escrutinio\_senadores) \land \\ escrutinioValido(escrutinio\_presidencial) }
+	\requiere{|escrutinio\_presidencial| = |escrutinio\_senadores| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
+	escrutinioValido(escrutinio\_presidencial) \land escrutinioValido(escrutinio\_senadores) \\ \land escrutinioValido(escrutinio\_presidencial)}
 	\asegura{res = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados)}
 \end{proc}
 
@@ -75,17 +78,14 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 	\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |res| \yLuego 0 \leq j < |res[i]| \implicaLuego res[i][j] =  escrutinio[i]/(j + 1)}}
 \end{proc}
 
-if superaUmbral then tamaño else [] endif
-
 \subsection{Ejercicio 5}
 
 \begin{proc}{obtenerDiputadosEnProvincia}{\In cant\_bancas : \ent, \In escrutinio : \TLista{\ent} \In DHont : \TLista{\TLista{\ent}}}{\TLista{\ent}}
 	%    \modifica{parametro1, parametro2,..}
-	\requiere{cant\_bancas > 0 \yLuego dHontValida(DHont, cant\_bancas)}
-	\asegura{|res| = |DHont| \yLuego \\ \paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \implicaLuego res[i] = \sum\limits_{j=0}^{|		DHont[i]|-1} \IfThenElse{cant\_bancas > \#cocientesMayores(DHont[i][j], DHont)}{1}{0}}}
+	\requiere{cant\_bancas > 0 \yLuego dHontValida(DHont, cant\_bancas, escrutinio)}
+	\asegura{|res| = |DHont| \yLuego \\ \paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \implicaLuego res[i] = \sum\limits_{j=0}^{|DHont[i]|-1} \IfThenElse{cant\_bancas > \#cocientesMayores(DHont[i][j], DHont)}{1}{0}}}
 	 
 \end{proc}
-
 
 \subsection{Ejercicio 6}
 
@@ -107,12 +107,13 @@ if superaUmbral then tamaño else [] endif
 \pred{noHayEmpate}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i,j < |escrutinio| - 1  \land i \neq j  \implicaLuego escrutinio[i] \neq escrutinio[j] }}
 \pred{votosValidos}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| \implicaLuego escrutinio[i] \geq 0 }}
 \pred{escrutinioValido}{\In escrutinio : \TLista{\ent}}{|escrutinio| > 2 \land noHayEmpate(escrutinio) \land votosValidos(escrutinio)}
-\pred{cocientesDistintos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |DHont| \yLuego 0 \leq j, r < |DHont[i]| \yLuego
-|DHont[i]| = |DHont[k]| \yLuego (i \neq k \lor j \neq r) \implicaLuego 
+\pred{cocientesDistintos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |DHont| \yLuego 0 \leq j, r < |DHont[i]| \land
+|DHont[i]| = |DHont[k]| \land (i \neq k \lor j \neq r) \implicaLuego 
 DHont[i][j] \neq DHont[k][r]}}
 \pred{cocientesPositivos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |DHont| \yLuego 0 \leq j < |DHont[i]| \implicaLuego DHont[i][j] \geq 0}}
 \pred{filasValidas}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |DHont| \yLuego |DHont[i]| > 0  \implicaLuego |DHont[i]| =  cant\_bancas}}
-\pred{dHontValida}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent}{filasValidas(DHont, cant\_bancas) \yLuego cocientesPositivos(DHont) \yLuego cocientesDistintos(DHont)} 
+\pred{dHontValida}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent, \In escrutinio : \TLista{\ent}}{
+|escrutinio| - 1 = |DHont| \land filasValidas(DHont, cant\_bancas) \land cocientesPositivos(DHont) \land cocientesDistintos(DHont)} 
 \pred{generosValidos}{\In Listas : \TLista{\TLista{\ent \times \ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| \implicaLuego listas[i][j]_{1} = 1 \lor  listas[i][j]_{1} = 2}}
 
 \newpage
@@ -155,26 +156,33 @@ res :=  (primero <= 45 || segundo > 45) && (primero < 40 || diferencia <= 10)
 	\begin{lstlisting}[caption={},label=code:for]
 i := 0;
 total_presidencial := 0;
+total_senadores := 0;
+total_diputados := 0;
 while (i < escrutinio_presidencial.size()) do
 	total_presidencial := total_presidencial + escrutinio_presidencial[i];
-	i := i + 1
-endwhile
-j := 0;
-total_senadores := 0;
-while (j < escrutinio_senadores.size()) do
 	total_senadores := total_senadores + escrutinio_senadores[i];
-	j := j + 1
-endwhile
-k := 0;
-total_diputados := 0;
-while (k < escrutinio_diputados.size()) do
-	total_diputados := total_diputados + total_diputados[i];
-	k := k + 1
+	total_diputados := total_diputados + escrutinio_diputados[i];
+	i := i + 1
 endwhile
 res := (total_presidencial = total_senadores) && (total_senadores = total_diputados)
 	\end{lstlisting}
 
-\newpage
+\subsection{Implementacion validarListasDiputadosEnProvincia}
+
+	\begin{lstlisting}[caption={},label=code:for]
+i := 0;
+res := True
+while (i < listas.size() - 1) do
+	res := res && |listas[i]| = |listas[i+1]|
+endwhile
+while (j < listas.size()) do
+	while (k < listas[j].size() - 1) do
+		res := res && listas[j][k][1] != listas[j][k+1][1]
+		k := k + 1
+	endwhile
+	j := j +1
+endwhile
+	\end{lstlisting}
 
 \subsection{Implementación de obtenerSenadoresEnProvincia}
 
@@ -198,24 +206,10 @@ endwhile
 res := (primero, segundo)
 	\end{lstlisting}
 
-\subsection{Implementacion validarListasDiputadosEnProvincia}
-
-	\begin{lstlisting}[caption={},label=code:for]
-i := 0;
-res := True
-while (i < listas.size() - 1) do
-	res := res && |listas[i]| = |listas[i+1]|
-endwhile
-while (j < listas.size()) do
-	while (k < listas[j].size() - 1) do
-		res := res && listas[j][k][1] != listas[j][k+1][1]
-		k := k + 1
-	endwhile
-	j := j +1
-endwhile
-	\end{lstlisting}
 
 \subsection{Demostracion de correctitud de hayFraude}
+
+
 
 \subsection{Demostracion de correctitud de obtenerSenadoresEnProvincia}
 
