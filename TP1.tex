@@ -51,7 +51,7 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 
 \begin{proc}{hayFraude}{\In escrutinio\_presidencial : \TLista{\ent}, \In escrutinio\_senadores : \TLista{\ent}, \In escrutinio\_diputados : \TLista{\ent}}{Bool}
 	%    \modifica{parametro1, parametro2,..}
-	\requiere{escrutinioValido(escrutinio\_presidencial) \land escrutinioValido(escrutinio\_senadores) \\ \land escrutinioValido(escrutinio\_presidencial) }
+	\requiere{escrutinioValido(escrutinio\_presidencial) \land escrutinioValido(escrutinio\_senadores) \land \\ escrutinioValido(escrutinio\_presidencial) }
 	\asegura{res = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados)}
 \end{proc}
 
@@ -69,16 +69,21 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \begin{proc}{calcularDHontEnProvincia}{\In cant\_bancas : \ent, \In escrutinio : \TLista{\ent}}{\TLista{\TLista{\ent}}}
 	%    \modifica{parametro1, parametro2,..}
 	\requiere{cant\_bancas > 0 \land escrutinioValido(escrutinio)}
-	\asegura{esMatriz(res) \yLuego |res| = |escrutinio| - 1 \yLuego |res[0]| = cant\_bancas \yLuego \\
-	\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |res| \land 0 \leq j < |res[0]| \implicaLuego res[i][j] =  escrutinio[i]/(j + 1)}}
+	\asegura{|res| = |escrutinio| - 1 \yLuego \\
+	\paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \yLuego superaUmbral(escrutinio[i]) \implicaLuego |res[i]| =  cant\_bancas} \land \\
+	\paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \yLuego \neg(superaUmbral(escrutinio[i])) \implicaLuego |res[i]| =  0} \land \\
+	\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |res| \yLuego 0 \leq j < |res[i]| \implicaLuego res[i][j] =  escrutinio[i]/(j + 1)}}
 \end{proc}
+
+if superaUmbral then tamaño else [] endif
 
 \subsection{Ejercicio 5}
 
-\begin{proc}{obtenerDiputadosEnProvincia}{\In cant\_bancas : \ent, \In DHont : \TLista{\TLista{\ent}}}{\TLista{\ent}}
+\begin{proc}{obtenerDiputadosEnProvincia}{\In cant\_bancas : \ent, \In escrutinio : \TLista{\ent} \In DHont : \TLista{\TLista{\ent}}}{\TLista{\ent}}
 	%    \modifica{parametro1, parametro2,..}
-	\requiere{dHontValida(DHont) \land cant\_bancas > 0 \land cant\_bancas = |DHont[0]|}
-	\asegura{|res| = |DHont| \yLuego \\ \paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \implicaLuego res[i] = \sum\limits_{j=0}^{|DHont[0]|} \IfThenElse{cant\_bancas > \#cocientesMayores(DHont[i][j], DHont)}{1}{0}}}
+	\requiere{cant\_bancas > 0 \yLuego dHontValida(DHont, cant\_bancas)}
+	\asegura{|res| = |DHont| \yLuego \\ \paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \implicaLuego res[i] = \sum\limits_{j=0}^{|		DHont[i]|-1} \IfThenElse{cant\_bancas > \#cocientesMayores(DHont[i][j], DHont)}{1}{0}}}
+	 
 \end{proc}
 
 
@@ -97,17 +102,20 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \subsection{Predicados y Auxiliares}
 
 \aux{porcentaje}{\In partido : {\ent}, \In escrutinio : \TLista{\ent}}{\ent}{(escrutinio[partido] * 100) / totalVotos(escrutinio)}
-\aux{\#cocientesMayores}{\In cociente : {\ent}, \In DHont : \TLista{\TLista{\ent}}}{\ent}{\sum\limits_{j=0}^{|DHont[0]|} \sum\limits_{i=0}^{|DHont|} \IfThenElse{DHont[i][j] > cociente}{1}{0}}
+\aux{\#cocientesMayores}{\In i : \ent, \In j : \ent, \In DHont : \TLista{\TLista{\ent}}}{\ent}{\\ \sum\limits_{r=0}^{|DHont[i]|-1} \sum\limits_{k=0}^{|DHont|-1} \IfThenElse{DHont[k][r] > DHont[i][j]}{1}{0}}
 \aux{totalVotos}{\In escrutinio : \TLista{\ent}}{\ent}{\sum\limits_{i=0}^{|escrutinio|-1} escrutinio[i]}
 \pred{noHayEmpate}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i,j < |escrutinio| - 1  \land i \neq j  \implicaLuego escrutinio[i] \neq escrutinio[j] }}
 \pred{votosValidos}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| \implicaLuego escrutinio[i] \geq 0 }}
 \pred{escrutinioValido}{\In escrutinio : \TLista{\ent}}{|escrutinio| > 2 \land noHayEmpate(escrutinio) \land votosValidos(escrutinio)}
-\pred{esMatriz}{\In matriz : \TLista{\TLista{\ent}}}{|matriz| > 0 \yLuego |matriz[0]|>0 \land \paraTodo[unalinea]{i}{\ent}{0 \leq i < |matriz| \implicaLuego |matriz[i]| = |matriz[0]|}}
-\pred{cocientesDistintos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |DHont| \land 0 \leq j, r < |DHont[0]| \land i \neq k \land j \neq r \implicaLuego 
+\pred{cocientesDistintos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |DHont| \yLuego 0 \leq j, r < |DHont[i]| \yLuego
+|DHont[i]| = |DHont[k]| \yLuego (i \neq k \lor j \neq r) \implicaLuego 
 DHont[i][j] \neq DHont[k][r]}}
-\pred{cocientesPositivos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |DHont| \land 0 \leq j < |DHont[0]| \implicaLuego DHont[i][j] \geq 0}}
-\pred{dHontValida}{\In DHont : \TLista{\TLista{\ent}}}{esMatriz(DHont) \yLuego cocientesDistintos(DHont) \land cocientesPositivos(DHont)} 
+\pred{cocientesPositivos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |DHont| \yLuego 0 \leq j < |DHont[i]| \implicaLuego DHont[i][j] \geq 0}}
+\pred{filasValidas}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |DHont| \yLuego |DHont[i]| > 0  \implicaLuego |DHont[i]| =  cant\_bancas}}
+\pred{dHontValida}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent}{filasValidas(DHont, cant\_bancas) \yLuego cocientesPositivos(DHont) \yLuego cocientesDistintos(DHont)} 
 \pred{generosValidos}{\In Listas : \TLista{\TLista{\ent \times \ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| \implicaLuego listas[i][j]_{1} = 1 \lor  listas[i][j]_{1} = 2}}
+
+\newpage
 
 \section{Implemetaciones y demostraciones de correctitud}
 
@@ -165,6 +173,8 @@ while (k < escrutinio_diputados.size()) do
 endwhile
 res := (total_presidencial = total_senadores) && (total_senadores = total_diputados)
 	\end{lstlisting}
+
+\newpage
 
 \subsection{Implementación de obtenerSenadoresEnProvincia}
 
