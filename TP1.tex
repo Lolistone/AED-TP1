@@ -211,6 +211,117 @@ res := (primero, segundo)
 
 
 
+Para probar que el algoritmo propuesto es correcto vamos a dividirlo en subprogramas:
+
+\vspace{0.3cm}
+
+$S_1$
+	\begin{lstlisting}[caption={},label=code:for]
+i := 0;
+total_presidencial := 0;
+total_senadores := 0;
+total_diputados := 0;
+	\end{lstlisting}
+
+\vspace{0.3cm}
+
+$Ciclo$
+	\begin{lstlisting}[caption={},label=code:for]
+while (i < escrutinio_presidencial.size()) do
+	total_presidencial := total_presidencial + escrutinio_presidencial[i];
+	total_senadores := total_senadores + escrutinio_senadores[i];
+	total_diputados := total_diputados + escrutinio_diputados[i];
+	i := i + 1
+endwhile
+	\end{lstlisting}
+
+\vspace{0.3cm}
+
+$S_2$
+
+
+	\begin{lstlisting}[caption={},label=code:for]
+res := (total_presidencial = total_senadores) && (total_senadores = total_diputados)
+	\end{lstlisting}
+
+\vspace{0.3cm}
+
+Y, luego probaremos que,
+
+
+\begin{enumerate}\setlength{\itemindent}{0.5cm}
+		\item Requiere $\rightarrow$ wp($S_1$, $P_c$)
+		\item $P_c$ $\rightarrow$ wp(Ciclo, $Q_c$)
+		\item $Q_c$ $\rightarrow$ wp($S_2$, Asegura)
+\end{enumerate}
+
+Si probamos estas tres cosas, por el corolario de monotonía tenemos que, \vspace{0.2cm} \\
+\indent \qquad \quad Requiere $\rightarrow$ wp(hayFraude, Asegura)
+
+\vspace{0.3cm}
+
+Comencemos eligiendo, \vspace{0.3cm} \\
+$P_{c} \equiv i=0 \land total\_presidente = 0 \land total\_senadores = 0 \land total\_diputados = 0 \land \\ |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
+escrutinioValido(escrutinio\_presidente)  \land escrutinioValido(escrutinio\_presidente) \land escrutinioValido(escrutinio\_presidente) \vspace{0.1cm} $
+(Es lo mínimo que podemos pedir basandonos en el Requiere más aplicar S1) \vspace{0.1cm}\\
+$Q_{c} \equiv total\_presidencial = totalVotos(escrutinio\_presidencial) \land  total\_diputados = totalVotos(escrutinio\_diputados) \land total\_senadores = totalVotos(escrutinio\_senadores)  \land  |escrutinio\_senadores| = |escrutinio\_presidente| \land \\ |escrutinio\_senadores| = |escrutinio\_diputados| \vspace{0.1cm} $ \\
+(Similar al asegura, con la diferencia de que no hablamos de res) \vspace{0.1cm} \\
+$B \equiv i < |escrutinio\_presidencial|$ \vspace{0.1cm}\\
+(Es la guarda del ciclo) \vspace{0.1cm} \\
+$I \equiv 0 \leq i \leq |escrutinio\_presidencial| \yLuego total\_presidencial = \sum\limits_{k=0}^{i - 1} escrutinio\_presidencial[k] \land \\
+0 \leq i \leq |escrutinio\_senadores| \yLuego total\_senadores = \sum\limits_{k=0}^{i - 1} escrutinio\_senadores[k] \land \\
+0 \leq i \leq |escrutinio\_diputados| \yLuego total\_diputados = \sum\limits_{k=0}^{i - 1} escrutinio\_diputados[k]$ \vspace{0.1cm} \\
+(Como el ciclo incrementa i, el invariante muestra que total\_presidencial, total\_senadores y total\_diputados contienen 
+las sumas parciales de sus elementos hasta i-1) \vspace{0.1cm} \\
+$Fv = |escrutinio\_presidencial| - i $
+
+\subsection{1. Requiere $\rightarrow$ wp($S_1$, $P_c$)}
+
+\noindent Primero calculo wp($S_1$, $P_c$) \vspace{0.1cm} \\
+$wp(i:=0; total\_presidencial = 0 ; total\_senadores = 0 ;total\_diputados = 0, P_c)$ \vspace{0.1cm}\\
+(Por axioma 3, calculamos de afuera hacia dentro) \vspace{0.1cm}\\
+$ wp(total\_diputados := 0, P_{c}) \equiv def(0) \yLuego i=0 \land total\_presidente = 0 \land total\_senadores = 0 \land 0=0\land \\ |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
+escrutinioValido(escrutinio\_presidente)  \land escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \vspace{0.1cm} $ \\
+$ \equiv i=0 \land total\_presidente = 0 \land total\_senadores = 0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \land \\ |escrutinio\_senadores| = |escrutinio\_diputados| \land
+escrutinioValido(escrutinio\_presidente)  \\ \land escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \equiv E_1  \vspace{0.5cm} $ 
+
+\noindent $wp(total\_senadores := 0, E_1) \equiv def(0) \yLuego i=0 \land total\_presidente = 0 \land 0 = 0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land
+escrutinioValido(escrutinio\_presidente)  \\ \land escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \vspace{0.1cm} $
+
+\noindent $\equiv i=0 \land total\_presidente = 0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \land \\ |escrutinio\_senadores| = |escrutinio\_diputados| \land
+escrutinioValido(escrutinio\_presidente)  \\ \land escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \equiv E_2 \vspace{0.5cm} $ 
+
+\noindent $wp(total\_presidente := 0, E_2) \equiv def(0) \yLuego i=0 \land 0=0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \\ \land |escrutinio\_senadores| = |escrutinio\_diputados| \land
+escrutinioValido(escrutinio\_presidente)  \\ \land escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \vspace{0.1cm} $
+
+\noindent $ \equiv i=0 \land total\_presidente = 0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \land \\ |escrutinio\_senadores| = |escrutinio\_diputados| \land
+escrutinioValido(escrutinio\_presidente) \land \\ escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \equiv E_3 \vspace{0.5cm} $
+
+\noindent $wp(total\_presidente := 0, E_3) \equiv def(0) \yLuego 0=0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \\ \land |escrutinio\_senadores| = |escrutinio\_diputados| \land
+escrutinioValido(escrutinio\_presidente)  \\ \land escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \vspace{0.1cm} $
+
+\noindent $ \equiv |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
+escrutinioValido(escrutinio\_presidente) \land escrutinioValido(escrutinio\_senadores) \land \\ escrutinioValido(escrutinio\_diputados) \equiv E_4 \vspace{0.5cm} $
+
+Ahora como $Requiere \equiv E_4, Requiere \rightarrow E_4$
+
+\subsection{3. $Q_C$ $\rightarrow$ wp($S_2$, Asegura)}
+
+\noindent Calculamos wp($S_2$, Asegura) \vspace{0.1cm} \\
+\noindent wp($res := (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados)$, Asegura) \vspace{0.1cm} \\
+$\equiv def((total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados)) \yLuego \\ 
+True = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados \vspace{0.1cm} $
+
+\noindent $\equiv totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados) \equiv E_5 \vspace{0.5cm}$
+
+\newpage
+
+\noindent Quiero ver que $Q_c \rightarrow E_5 \vspace{0.1cm}$
+
+\noindent Asumo verdadero $Q_c$ y tengo que, \vspace{0.1cm}\\
+totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador)\\  
+totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados)
+
 \subsection{Demostracion de correctitud de obtenerSenadoresEnProvincia}
 
 \end{document}
