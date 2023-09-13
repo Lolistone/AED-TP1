@@ -261,10 +261,10 @@ Si probamos estas tres cosas, por el corolario de monotonía tenemos que, \vspac
 \vspace{0.3cm}
 
 Comencemos eligiendo, \vspace{0.3cm} \\
-$P_{c} \equiv i=0 \land total\_presidente = 0 \land total\_senadores = 0 \land total\_diputados = 0 \land \\ |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
+$P_{c} \equiv i=0 \land total\_presidencial = 0 \land total\_senadores = 0 \land total\_diputados = 0 \land \\ |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
 escrutinioValido(escrutinio\_presidente)  \land escrutinioValido(escrutinio\_presidente) \land escrutinioValido(escrutinio\_presidente) \vspace{0.1cm} $
 (Es lo mínimo que podemos pedir basandonos en el Requiere más aplicar S1) \vspace{0.1cm}\\
-$Q_{c} \equiv total\_presidencial = totalVotos(escrutinio\_presidencial) \land  total\_diputados = totalVotos(escrutinio\_diputados) \land total\_senadores = totalVotos(escrutinio\_senadores)  \land  |escrutinio\_senadores| = |escrutinio\_presidente| \land \\ |escrutinio\_senadores| = |escrutinio\_diputados| \vspace{0.1cm} $ \\
+$Q_{c} \equiv total\_presidencial = totalVotos(escrutinio\_presidencial) \land  total\_diputados = totalVotos(escrutinio\_diputados) \land total\_senadores = totalVotos(escrutinio\_senadores) \land i = |escrutinio\_presidencial| \vspace{0.1cm} $ \\
 (Similar al asegura, con la diferencia de que no hablamos de res) \vspace{0.1cm} \\
 $B \equiv i < |escrutinio\_presidencial|$ \vspace{0.1cm}\\
 (Es la guarda del ciclo) \vspace{0.1cm} \\
@@ -275,7 +275,7 @@ $I \equiv 0 \leq i \leq |escrutinio\_presidencial| \yLuego total\_presidencial =
 las sumas parciales de sus elementos hasta i-1) \vspace{0.1cm} \\
 $Fv = |escrutinio\_presidencial| - i $
 
-\subsection{1. Requiere $\rightarrow$ wp($S_1$, $P_c$)}
+\subsection{1. $Requiere \rightarrow wp(S_1, P_c)$}
 
 \noindent Primero calculo wp($S_1$, $P_c$) \vspace{0.1cm} \\
 $wp(i:=0; total\_presidencial = 0 ; total\_senadores = 0 ;total\_diputados = 0, P_c)$ \vspace{0.1cm}\\
@@ -305,22 +305,72 @@ escrutinioValido(escrutinio\_presidente) \land escrutinioValido(escrutinio\_sena
 
 Ahora como $Requiere \equiv E_4, Requiere \rightarrow E_4$
 
-\subsection{3. $Q_C$ $\rightarrow$ wp($S_2$, Asegura)}
+\subsection{2. $P_c \rightarrow wp(Ciclo, Q_c)$ }
+
+\noindent Para probar la correctitud del Ciclo, debemos probar que, \vspace{0.1cm} \\
+
+\noindent $P_c \rightarrow I$
+
+\begin{itemize}\setlength{\itemindent}{0.5cm}
+	\item  $0 \leq i \leq |escrutino\_senadores| \land 0 \leq i \leq |escrutino\_diputados| \equiv  0 \leq i \leq |escrutino\_presidencial|$ (1)
+	\item $0 \leq i \leq |escrutino\_presidencial|$ (Vale pues i = 0)
+	\item $total\_presidencial = \sum\limits_{k=0}^{i - 1} escrutinio\_presidencial[k] \equiv 0 = 0 \equiv True$ (2)
+	\item $total\_senadores = \sum\limits_{k=0}^{i - 1} escrutinio\_senadores[k] \equiv 0 = 0 \equiv True$
+	\item $total\_diputados = \sum\limits_{k=0}^{i - 1} escrutinio\_diputados[k] \equiv 0 = 0 \equiv True$
+\end{itemize}
+
+\noindent (1) De $P_c$ deduzco que $|escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_diputados| = |escrutinio\_presidente|$
+\noindent (2) Por un lado, tenemos que $total\_presidente = 0$ y por otro, como i = 0, tengo $\sum\limits_{k=0}^{0 - 1} escrutinio\_presidencial[k] = 0 \vspace{0.1cm}$
+
+\noindent Por lo tanto, $P_c \rightarrow I$, que es lo que queria ver. \vspace{0.2cm}\\
+
+
+\noindent $I \land \neg B \rightarrow Q_c$ \vspace{0.1cm}
+
+\noindent $I \land \neg B \equiv i = |escrutinio\_presidencial| \yLuego total\_presidencial = \sum\limits_{k=0}^{i - 1} escrutinio\_presidencial[k] \land \\
+0 \leq i \leq |escrutinio\_senadores| \yLuego total\_senadores = \sum\limits_{k=0}^{i - 1} escrutinio\_senadores[k] \land \\
+0 \leq i \leq |escrutinio\_diputados| \yLuego total\_diputados = \sum\limits_{k=0}^{i - 1} escrutinio\_diputados[k] \vspace{0.1cm}$
+
+Veamos parte por parte,
+
+\begin{itemize}\setlength{\itemindent}{0.5cm}
+	\item $i = |escrutinio\_presidencial|$ (trivial)
+	\item $total\_presidencial = totalVotos(escrutinio\_presidencial) \\ \equiv \sum\limits_{k=0}^{i - 1} escrutinio\_presidencial[k] = \sum\limits_{k=0}^{|escrutinio\_presidencial| - 1} escrutinio\_presidencial[k]  \\
+	\equiv \sum\limits_{k=0}^{|escrutinio\_presidencial| - 1} escrutinio\_presidencial[k] = \sum\limits_{k=0}^{|escrutinio\_presidencial| - 1} escrutinio\_presidencial[k]$ (1)
+	\item $total\_senadores = totalVotos(escrutinio\_senadores)$ (2)
+	\item $total\_diputados = totalVotos(escrutinio\_diputados)$ (3)
+\end{itemize}
+
+\noindent (1) Vale pues $total\_presidencial$ = sumatoria hasta i - 1, pero i = $|escrutinio\_presidencial|$ \vspace{0.1cm} \\
+\noindent (2), (3) Análogos. \vspace{0.1cm}\\
+
+\noindent Queda entonces probado que I vale al salir del ciclo.
+
+\subsection{3. $Q_C \rightarrow wp(S_2, Asegura)$}
 
 \noindent Calculamos wp($S_2$, Asegura) \vspace{0.1cm} \\
 \noindent wp($res := (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados)$, Asegura) \vspace{0.1cm} \\
 $\equiv def((total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados)) \yLuego \\ 
-True = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados \vspace{0.1cm} $
+(total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados) \vspace{0.1cm} $
 
-\noindent $\equiv totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados) \equiv E_5 \vspace{0.5cm}$
-
-\newpage
+\noindent $\equiv (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados  \equiv E_5 \vspace{0.5cm}$
 
 \noindent Quiero ver que $Q_c \rightarrow E_5 \vspace{0.1cm}$
 
-\noindent Asumo verdadero $Q_c$ y tengo que, \vspace{0.1cm}\\
-totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador)\\  
-totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados)
+\noindent Asumo verdadero $Q_c$ y tengo que,
+
+\begin{itemize}\setlength{\itemindent}{0.5cm}
+	\item $totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \equiv total\_presidencial = 		total\_senadores$ 
+	\item $totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados) \equiv total\_senadores = 		total\_diputados$
+\end{itemize}
+
+\noindent  Luego, \\
+
+\noindent $E_5 \equiv (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) = True \longleftrightarrow \\
+(total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) \vspace{0.1cm}$
+
+\noindent Lo cual es una tautologia, por lo tanto $Q_c \rightarrow E_5$ 
+
 
 \subsection{Demostracion de correctitud de obtenerSenadoresEnProvincia}
 
