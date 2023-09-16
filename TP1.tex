@@ -12,10 +12,9 @@
 \materia{Algoritmos y Estructuras de Datos}
 \grupo{swifties}
 
-\integrante{Apellido, Nombre1}{001/01}{email1@dominio.com}
-\integrante{Apellido, Nombre2}{002/01}{email2@dominio.com}
-\integrante{Apellido, Nombre3}{003/01}{email3@dominio.com}
-\integrante{Apellido, Nombre4}{004/01}{email4@dominio.com}
+\integrante{Cordoba Lazzaro, Lisandro}{327/23}{lisandrocordoba11@gmail.com}
+\integrante{Martinelli, Lorenzo}{364/23}{martinelli.lorenzo12@gmail.com}
+\integrante{Nahum, Felipe}{424/23}{felipenahum28@gmail.com}
 % Pongan cuantos integrantes quieran
 
 % Declaramos donde van a estar las figuras
@@ -63,8 +62,8 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \begin{proc}{obtenerSenadoresEnProvincia}{\In escrutinio : \TLista{\ent}}{$\ent \times \ent$}
 	%    \modifica{parametro1, parametro2,..}
 	\requiere{escrutinioValido(escrutinio)}
-	\asegura{(0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0} \land 
-	i \neq res_{1} \implicaLuego \\ escrutinio[i] < escrutinio[res_{1}] < escrutinio[res_{0}]}} 
+	\asegura{(0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0}
+	i \neq res_{1} \implicaLuego \\ escrutinio[i] < escrutinio[res_{1}]} \land res_{1} < res_{0}} 
 \end{proc}
 
 \subsection{Ejercicio 4}
@@ -195,7 +194,7 @@ while (i < escrutinio.size() - 1) do
 		segundo := primero;
 		primero := i;
 	else
-		if (escrutinio[primero] > escrutinio[i] && escrutinio[i] > escrutinio[segundo]) then
+		if (escrutinio[i] > escrutinio[segundo]) then
 			segundo := i;
 		else
 			skip;
@@ -522,7 +521,7 @@ while (i < escrutinio.size() - 1) do
 		segundo := primero;
 		primero := i;
 	else
-		if (escrutinio[primero] > escrutinio[i] && escrutinio[i] > escrutinio[segundo]) then
+		if (escrutinio[i] > escrutinio[segundo]) then
 			segundo := i;
 		else
 			skip;
@@ -559,13 +558,13 @@ Si probamos estas tres cosas, por el corolario de monotonía tenemos que, \vspac
 Comencemos eligiendo, \vspace{0.3cm} \\
 $\textbf P_{c} \equiv escrutinioValido(escrutinio) \land i = 1 \land segundo = 0 \land primero = 0 $ \vspace{0.1cm} \\
 (Es el requiere mas las instrucciones previas al ciclo) \vspace{0.1cm} \\
-$\textbf Q_{c} \equiv (0 \leq primero, segundo < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq primero \land 
-i \neq segundo \implicaLuego \\ escrutinio[i] < escrutinio[segundo] < escrutinio[primero]} \vspace{0.1cm} $ \\
+$\textbf Q_{c} \equiv (0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0}
+i \neq res_{1} \implicaLuego \\ escrutinio[i] < escrutinio[res_{1}]} \land escrutinio[res_{1}] < escrutinio[res_{0}] \vspace{0.1cm} $ \\
 (Similar al asegura, con la diferencia de que no hablamos de res) \vspace{0.1cm} \\
 $\textbf B \equiv i < |escrutinio| - 1 $ \vspace{0.1cm}\\
 (Es la guarda del ciclo) \vspace{0.1cm} \\
-$\textbf I \equiv 0 < i \leq |escrutinio| - 1 \yLuego  (0 \leq primero, segundo < i) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land 
-j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo] < escrutinio[primero]} $ \vspace{0.1cm} \\
+$\textbf I \equiv 0 < i \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land 
+j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio) $ \vspace{0.1cm} \\
 (Como el ciclo incrementa i, primero y segundo son los dos indices de escrutinio donde estan respectivamente los dos valores maximos hasta i) \vspace{0.1cm} \\
 $\textbf{Fv}= |escrutinio| - i $ \\
 (A medida que i aumenta en cada iteracion, fv decrece)
@@ -617,7 +616,9 @@ $\textbf{Fv}= |escrutinio| - i $ \\
 \begin{itemize}\setlength{\itemindent}{0.5cm}
 	\item  $0 < i \leq |escrutinio| - 1$ vale pues i = 1 y $|escrutinio| > 2.$
 	\item $0 \leq primero, segundo < i$ vale pues i = 1, segundo = 0 y primero = 0.
-	\item  $\paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land  j \neq segundo \implicaLuego  escrutinio[j] < escrutinio[segundo] < escrutinio[primero]}  (1)$
+	\item  $\paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land  j \neq segundo \implicaLuego  escrutinio[j] < escrutinio[segundo]}  (1)$
+	\item escrutinio[segundo] $\leq$ escrutinio[primero] vale pues escrutinio[0] $\leq$ escrutinio[0]
+	\item noHayEmpate(escrutinio) vale pues esta dento de escrutinioValido(escrutinio)
 \end{itemize}
 
 \noindent (1) Como i = 1, el unico valor que cumple 0 $\leq j < i$ es j = 0, pero como primero y segundo son iguales a cero todo el antecedente es falso.
@@ -627,14 +628,19 @@ Por otro lado, para todo j $\neq$ 0 el antecedente también es falso. Luego, la 
 
 \noindent 2. Asumiendo $I \land \neg B$ válido, donde \\
 
-\noindent $I \land \neg B$ $\equiv$ $ i = |escrutinio| - 1 \yLuego  (0 \leq primero, segundo < i) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo] < escrutinio[primero]} $ \\
+\noindent $I \land \neg B$ $\equiv$ $ i = |escrutinio| - 1 \yLuego  (0 \leq primero, segundo < i) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio)$ \\
 
 \noindent Quiero probar que vale $Q_c$
 
 \begin{itemize}\setlength{\itemindent}{0.5cm}
 	\item  $(0 \leq primero, segundo < |escrutinio| - 1) \equiv (0 \leq primero, segundo < i) \equiv True $   $ (i = |escrutinio| - 1) $
-	\item   $\paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq primero \land i \neq segundo \implicaLuego escrutinio[i]< escrutinio[segundo]<escrutinio[primero]}$ Vale pues aparece la misma expresión
+	\item   $\paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq primero \land i \neq segundo \implicaLuego escrutinio[i]< escrutinio[segundo]}$ (1)
+	\item   escrutinio[segundo] $<$ escrutinio[primero] (2) 
 \end{itemize}
+
+
+\noindent (1) vale pues tengo que  $\paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[i]< escrutinio[segundo]} \land i = |escrutinio| - 1$  \\
+\noindent (2) vale pues escrutinio[segundo] $\leq$ escrutinio[primero] $\land$ noHayEmpate(escrutinio) \\
 
 \noindent Queda entonces probado lo que queriamos ver. \\
 
@@ -642,86 +648,197 @@ Por otro lado, para todo j $\neq$ 0 el antecedente también es falso. Luego, la 
 
 \noindent Calculamos la wp(If ...; i := i + 1, I)  $\equiv$ wp(If ..., wp(i := i + 1, I)) \\
 
-\noindent \textbf{wp}(i := i + 1, I) $\equiv$ def(i+1) $\yLuego$ $0 \leq i + 1 \leq |escrutinio| - 1 \yLuego  (0 \leq primero, segundo < i + 1) \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo] < escrutinio[primero]} $ \\
+\noindent \textbf{wp}(i := i + 1, I) $\equiv$  def(i+1) $\yLuego$ $ 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land 
+j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \\ \land noHayEmpate(escrutinio) $  \\
 
-\noindent $\equiv 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego  (0 \leq primero, segundo < i + 1) \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo] < escrutinio[primero]} \equiv E_5$ \\
+\noindent $\equiv$  $ 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio) \equiv E_5 $ \vspace{0.1cm} \\
 
-\noindent \textbf{wp}(If ..., $E_5$), por Axioma 4 tenemos que, \\
+\noindent Tenemos que ver ahora, \vspace{0.1cm}\\
 
-\noindent $\equiv def(escrutinio[i] > escrutinio[primero]) \yLuego \\ ((escrutinio[i] > escrutinio[primero] \land wp(segundo := primero; primero := i, E_5)) \lor \\
-(escrutinio[i] \leq escrutinio[primero] \land wp(If..., E_5)) ) \\$
+\noindent \textbf{wp}(If escrutinio[i] $>$ escrutinio[primero] ..., $E_5$) \\
 
-\noindent Veamoslos por separados, \\
+\noindent $\equiv def(escrutinio[i] > escrutinio[primero]) \yLuego \\ ((escrutinio[i] > escrutinio[primero] \land wp(segundo := primero; primero := i, E_5))
+\lor \\ (escrutinio[i] \leq escrutinio[primero]) \land wp(If escrutinio[i] > escrutinio[segundo] ..., E_5))$ \\
 
-\noindent \textbf{wp}$(segundo := primero; primero := i, E_5) \equiv wp(segundo := primero, wp(primero := i, E_5))$ \\
+\noindent $\equiv 0 \leq i, primero < |escrutinio| \yLuego \\ ((escrutinio[i] > escrutinio[primero] \land wp(segundo := primero; primero := i, E_5))
+\lor \\ (escrutinio[i] \leq escrutinio[primero]) \land wp(If escrutinio[i] > escrutinio[segundo] ..., E_5))$ \\
 
-\noindent \textbf{wp}$(primero := i, E_5)) \equiv def(i) \land 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego  (0 \leq i, segundo < i + 1) \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land  j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo] < escrutinio[i]} \equiv E_6 $ \\
+\noindent Por comodidad, veamos las dos wp que hay dentro por separado \vspace{0.1cm} \\
 
-\noindent \textbf{wp}$(segundo := primero, E_6)) \equiv def(primero) \land 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego  (0 \leq i, primero < i + 1) \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land  j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero] < escrutinio[i]} \equiv E_7 $ \\
+\noindent \textbf{wp}(segundo := primero; primero := i, $E_5$) $\equiv$ wp(segundo := primero, wp(primero := i, $E_5$)) \vspace{0.1cm} \\
 
-\noindent Vemos el lado izquiero del $\lor$, \\
+\noindent $wp(primero := i, E_5) \equiv def(i) \yLuego 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq i, segundo < i + 1 \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[i] \land noHayEmpate(escrutinio)$ \\
 
-\noindent $(escrutinio[i] > escrutinio[primero] \land E_7)$ \\ 
+\noindent $ \equiv 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq i, segundo < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[i] \land noHayEmpate(escrutinio) \equiv E_6$ \\
 
-\noindent $\equiv (escrutinio[i] > escrutinio[primero] \land 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land  j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero] < escrutinio[i]}$ \\
+\noindent \textbf{wp}(segundo := primero, $E_6$)  \\
 
-\noindent Por otro lado, \\
+\noindent $\equiv def(primero) \yLuego 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq i, primero < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero]} \\ \land escrutinio[primero] \leq escrutinio[i] \land noHayEmpate(escrutinio) $ \\
 
-\noindent \textbf{wp}$(If ..., E_5) \equiv def(escrutinio[primero] > escrutinio[i] > escrutinio[segundo]) \yLuego \\
-((escrutinio[primero] > escrutinio[i] > escrutinio[segundo] \land wp(segundo := i, E_5)) \lor \\
-(escrutinio[primero] \leq escrutinio[i] \lor escrutinio[i] \leq escrutinio[segundo] \land wp(skip, E_5)) $ \\
+\noindent $\equiv 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq i, primero < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero]} \\ \land escrutinio[primero] \leq escrutinio[i] \land noHayEmpate(escrutinio) \equiv E_7$ \\
 
-\noindent $\equiv 0 \leq primero, segundo, i < |escrutinio|  \yLuego \\
-((escrutinio[primero] > escrutinio[i] > escrutinio[segundo] \land def(i) \yLuego 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego \\ (0 \leq primero, i < i + 1) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq i \implicaLuego \\ escrutinio[j] < escrutinio[i] < escrutinio[primero]}) \lor \\
-(escrutinio[primero] \leq escrutinio[i] \lor escrutinio[i] \leq escrutinio[segundo] \land E_5)) $ \\
+\noindent Ya tenemos calculada la wp del lado izquierdo del or, veamos el derecho \vspace{0.1cm} \\
 
-\noindent $\equiv 0 \leq primero, segundo, i < |escrutinio|  \yLuego \\
-((escrutinio[primero] > escrutinio[i] > escrutinio[segundo] \land 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego \\ (0 \leq primero, i < i + 1) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq i \implicaLuego \\ escrutinio[j] < escrutinio[i] < escrutinio[primero]}) \lor \\
-(escrutinio[primero] \leq escrutinio[i] \lor escrutinio[i] \leq escrutinio[segundo] \land E_5)) $ \\
+\noindent \textbf{wp}(If escrutinio[i] $>$ escrutinio[segundo] ..., $E_5$) \\
 
-\noindent Ahora, el lado derecho del or, \\
+\noindent $\equiv def(escrutinio[i] > escrutinio[segundo]) \yLuego \\
+((escrutinio[i] > escrutinio[segundo] \land wp(segundo := i, E_5)) \lor \\ 
+(escrutinio[i] \leq escrutinio[segundo] \land wp(skip, E_5) ) )$ \\
 
-\noindent $escrutinio[i] \leq escrutinio[primero] \land 0 \leq primero, segundo, i < |escrutinio|  \yLuego \\
-((escrutinio[primero] > escrutinio[i] > escrutinio[segundo] \land 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego \\ (0 \leq primero, i < i + 1) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq i \implicaLuego \\ escrutinio[j] < escrutinio[i] < escrutinio[primero]}) \lor \\
-(escrutinio[primero] \leq escrutinio[i] \lor escrutinio[i] \leq escrutinio[segundo] \land E_5)) $ \\
+\noindent $\equiv 0 \leq i, segundo < |escrutinio| \yLuego \\
+((escrutinio[i] > escrutinio[segundo] \land def(i) \yLuego  0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, i < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq i \implicaLuego escrutinio[j] < escrutinio[i]} \\ \land escrutinio[i] \leq escrutinio[primero] \land noHayEmpate(escrutinio) ) \lor \\ 
+(escrutinio[i] \leq escrutinio[segundo] \land  0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \\ 
+\paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio))) \equiv E_8$ \\
 
-\newpage
+\noindent Reescribamos todo, \vspace{0.1cm} \\ 
 
-\noindent $\equiv escrutinio[i] \leq escrutinio[primero] \land 0 \leq primero, segundo, i < |escrutinio|  \yLuego \\
-((escrutinio[primero] > escrutinio[i] > escrutinio[segundo] \land 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego \\ (0 \leq primero, i < i + 1) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq i \implicaLuego \\ escrutinio[j] < escrutinio[i] < escrutinio[primero]}) \lor \\
-(escrutinio[primero] \leq escrutinio[i] \lor escrutinio[i] \leq escrutinio[segundo] \land  0 \leq i + 1 \leq |escrutinio| - 1 \yLuego \\ (0 \leq primero, segundo < i + 1) \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo] < escrutinio[primero]})) $ \\
+\noindent $\equiv 0 \leq i, primero < |escrutinio| \yLuego \\ ((escrutinio[i] > escrutinio[primero] \land E_7)
+\lor \\ (escrutinio[i] \leq escrutinio[primero]) \land E_8) \equiv E_9 $\\
 
-\noindent Juntamos todo,  \\
+\noindent Lo que necesito es probar que $I \land B \rightarrow E_9$ para eso, voy a reescribir el Invariante de otra manera, para eso primero voy a mirar lo siguiente, \\
 
-\noindent Y, queremos ver que $I \land B \rightarrow$ \textbf{wp}$(If ..., E_5)$  \\
+\noindent Si tengo 3 numero enteros, sean a, b y c,  donde sé que no hay repetidos (en este caso el noHayEmpates me lo garantizaria), tengo $3!$ maneras de ordenarlos, $(a < b < c) \lor (a < c < b) \lor (b < a <c) \lor (b < c < a) \lor (c < a < b) \lor (c < b <  a)$. Pero si además, pido que a $>$ b, (En este caso me lo garantiza,
+que escrutinio[primero] $>$ escrutinio[segundo]) me quedo solo con 3 posibilidades que son $(b < a < c) \lor (b < c < a) \lor (c < b < a)$ \\
 
-\noindent $\equiv ((escrutinio[i] > escrutinio[primero] \land 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land  j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero] < escrutinio[i]}) \lor \\
-(escrutinio[i] \leq escrutinio[primero] \land 0 \leq primero, segundo, i < |escrutinio|  \yLuego \\
-((escrutinio[primero] > escrutinio[i] > escrutinio[segundo] \land 0 \leq i + 1 \leq |escrutinio| - 1 \yLuego \\ (0 \leq primero, i < i + 1) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq i \implicaLuego \\ escrutinio[j] < escrutinio[i] < escrutinio[primero]}) \lor \\
-(escrutinio[primero] \leq escrutinio[i] \lor escrutinio[i] \leq escrutinio[segundo] \land  0 \leq i + 1 \leq |escrutinio| - 1 \yLuego \\ (0 \leq primero, segundo < i + 1) \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo] < escrutinio[primero]}))) ) \\$
+\noindent $I \equiv I \land True \equiv I \land (escrutinio[i] < escrutinio[segundo] < escrutinio[primero] \lor escrutinio[segundo] < escrutinio[i] < escrutinio[primero] \lor escrutinio[segundo] < escrutinio[primero] < escrutinio[i])$ \\
 
-\noindent $\equiv ((escrutinio[i] > escrutinio[primero] \land \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land  j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero] < escrutinio[i]}) \textbf{ORGRAnde}\lor \\
-(escrutinio[i] \leq escrutinio[primero] \land  \textbf{Ygrande} \\
-((escrutinio[primero] > escrutinio[i] > escrutinio[segundo] \land \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq i \implicaLuego \\ escrutinio[j] < escrutinio[i] < escrutinio[primero]}) \lor \\
-(escrutinio[primero] \leq escrutinio[i] \lor escrutinio[i] \leq escrutinio[segundo] \land \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land  j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo] < escrutinio[primero]}))) ) \\$
+\noindent Luego, I $\land$ B es igual a \vspace{0.1cm} \\
 
+\noindent $\equiv 0 < i < |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio) 
+\land \\ (escrutinio[i] < escrutinio[segundo] < escrutinio[primero] \lor escrutinio[segundo] < escrutinio[i] < escrutinio[primero] \lor escrutinio[segundo] < escrutinio[primero] < escrutinio[i]) 
+$ \\
 
-\noindent $\textbf B \equiv i < |escrutinio| - 1 $ \vspace{0.1cm}\\
-(Es la guarda del ciclo) \vspace{0.1cm} \\
-$\textbf I \equiv 0 < i \leq |escrutinio| - 1 \yLuego  (0 \leq primero, segundo < i) \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land 
-j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo] < escrutinio[primero]} $ \vspace{0.1cm} \\
+\noindent Comecemos notando que,
 
-\newpage
+\begin{itemize}\setlength{\itemindent}{0.5cm}
+	\item  $0 \leq i, primero < |escrutinio|$
+	\item $escrutinio[i] > escrutinio[primero]$
+	\item $escrutinio[i] \leq escrutinio[primero] \equiv escrutinio[i] < escrutinio[primero]$ (noHayEmpate)
+\end{itemize}
+
+\noindent Son verdaderas pues  $0 < i < |escrutinio| - 1$, y por distribuir esta nueva parte del invariante. \vspace{0.1cm} \\
+
+\noindent Nos queda entonces, \vspace{0.1cm} \\
+
+\noindent $E_9 \equiv E_7 \lor E_8$ \\
+
+\noindent Notemos que los tres casos que agregue al invariante son disjuntos, voy entonces asumir cada uno por separado. \vspace{0.1cm} \\
+
+\noindent Si escrutinio[segundo] $<$ escrutinio[primero] $<$ escrutinio[i] \\
+
+\noindent $E_7 \equiv 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq i, primero < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero]} \\ \land escrutinio[primero] \leq escrutinio[i] \land noHayEmpate(escrutinio) $ \\
+
+\noindent (Los rangos valen y escrutinio[primero] $\leq$ escrutinio[i] $\land$ noHayEmpate(escrutinio) es trivial) \\
+
+\noindent $E_7 \equiv \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero]} $ \\
+
+\noindent (Veamos que ocurre cuando el antecedente es verdadero, escrutinio[j] $<$ escrutinio[primero] tambien lo es
+puesto que en el invariante tenemos que j no es el primero ni el segundo entonces es menor al segundo y ademas tenemos que escrutinio[segundo] $<$ escrutinio[primero]. Si j = segundo los escrutinios serian iguales, entonces escrutinio[j] $<$ escrutinio[primero], sigue valiendo)\\
+
+\noindent $E_7 \equiv True \rightarrow E_9 \equiv True $ pues es una unión
+
+\noindent Segundo caso, $escrutinio[segundo] < escrutinio[i] < escrutinio[primero]$ \\
+
+\noindent $E_8 \equiv  0 \leq i, segundo < |escrutinio| \yLuego \\
+((escrutinio[i] > escrutinio[segundo] \land 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, i < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq i \implicaLuego escrutinio[j] < escrutinio[i]} \\ \land escrutinio[i] \leq escrutinio[primero] \land noHayEmpate(escrutinio) ) \lor \\ 
+(escrutinio[i] \leq escrutinio[segundo] \land  0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \\ 
+\paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio)))$ \\
+
+\noindent (Veamos que, escrutinio[i] $\leq$ escrutinio[segundo] $\equiv$ False, entonces el lado del derecho del or es falso.) \\
+
+\noindent $\equiv  0 \leq i, segundo < |escrutinio| \yLuego \\
+((escrutinio[i] > escrutinio[segundo] \land  0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, i < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq i \implicaLuego escrutinio[j] < escrutinio[i]} \\ \land escrutinio[i] \leq escrutinio[primero] \land noHayEmpate(escrutinio)) $\\ 
+
+\noindent (Todos los indices estaban en el rango correcto, por el invariante) \\
+
+\noindent $\equiv
+((escrutinio[i] > escrutinio[segundo] \land \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq i \implicaLuego escrutinio[j] < escrutinio[i]} \\ \land escrutinio[i] \leq escrutinio[primero] \land noHayEmpate(escrutinio)) $\\ 
+
+\noindent (escrutinio[i] $>$ escrutinio[segundo] y escrutinio[i] $\leq$ escrutinio[primero] valen por la hipotesis, y noHayEmpate(escrutinio) es trivial) \\
+
+\noindent $\equiv
+\paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \implicaLuego escrutinio[j] < escrutinio[i]} $\\ 
+
+\noindent (Si el antecedente es verdadero, y j = segundo tengo que escrutinio[j] = escrutinio[segundo], entonces escrutinio[j] $<$ escrutinio[i], por otro lado,
+si j no es igual al segundo, escrutinio[j] $<$ escrutinio[segundo], y en consecuencia escrutinio[j] $<$ escrutinio[i]) \\
+
+\noindent $E_8 \equiv True \rightarrow E_9 \equiv True$ \\
+
+\noindent $\equiv  I \equiv 0 < i < |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio) 
+\land \\ (escrutinio[i] < escrutinio[segundo] < escrutinio[primero] \lor escrutinio[segundo] < escrutinio[i] < escrutinio[primero] \lor escrutinio[segundo] < escrutinio[primero] < escrutinio[i]) 
+$ \\
+
+\noindent Para finalizar, veamos el caso que escrutinio[i] $<$ escrutinio[segundo] $<$ escrutinio[primero] \\
+
+\noindent $E_8 \equiv  0 \leq i, segundo < |escrutinio| \yLuego \\
+((escrutinio[i] > escrutinio[segundo] \land 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, i < i + 1 \yLuego \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq i \implicaLuego escrutinio[j] < escrutinio[i]} \\ \land escrutinio[i] \leq escrutinio[primero] \land noHayEmpate(escrutinio) ) \lor \\ 
+(escrutinio[i] \leq escrutinio[segundo] \land  0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \\ 
+\paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio)))$ \\
+
+\noindent (escrtunio[i] $>$ escrutinio[segundo] $\equiv$ False, luego el lado izquierdo del or es falso) \\
+
+\noindent $E_8 \equiv  0 \leq i, segundo < |escrutinio| \yLuego \\ 
+(escrutinio[i] \leq escrutinio[segundo] \land  0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \\ 
+\paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio))$ \\
+
+\noindent (Los indicen estan en rango) \\
+
+\noindent $E_8 \equiv
+(escrutinio[i] \leq escrutinio[segundo] \land \\
+\paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio))$ \\
+
+\noindent (escrutinio[i] $\leq$ escrutinio[segundo] y escrutinio[segundo] $\leq$ escrutinio[primero] salen de la hipotesis) \\
+
+\noindent $E_8 \equiv
+\paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]}$ \\
+
+\noindent (Para todos los casos donde el atecedente es verdadero y j no es i, la expresion es verdadera pues aparece en el invariante. Por otro lado, cuando j = i y cumple el precedente, tambien vale por nuestra hipotesis de que escrutinio[i] $<$ escrutinio[segundo] $<$ escrutinio[primero]) \\
+
+\noindent $E_8 \equiv True \rightarrow E_9 \equiv True$ \\
+
+\noindent Podemos concluir entonces que $I \land B  \rightarrow E_9$ y por lo tanto la tripla de Hoare vale. \\
+
+\noindent 4. Probemos que,  $I \land fv \leq 0 \rightarrow \neg B$ \\
+
+\noindent $I \land fv \leq 0 \equiv I \land |escrutinio| \leq i \rightarrow |escrutinio| \leq i + 1 \equiv \neg B $\\
+
+\noindent 5. Si probamos la tripla de Hoare $\{I \land B \land v_0 = fv\}$CuerpoDelCiclo$\{fv < v_0\}$ el ciclo termina y es correcto. \\
+
+\noindent Calculamos la wp(If ...; i := i + 1, fv $<$ $v_0$)  $\equiv$ wp(If ..., wp(i := i + 1, fv $<$ $v_0$)) \\
+
+\noindent \textbf{wp}(i := i + 1,   fv $<$ $v_0$) $\equiv$  def(i+1) $\yLuego$  $|escrutinio| - i < v_0 + 1 \equiv |escrutinio| - i < v_0 + 1 \equiv E_{10}$\\
+
+\noindent \textbf{wp}(If ...,  $E_{10}$) $\equiv def(escrutinio[i] > escrutinio[primero]) \yLuego \\ ((escrutinio[i] > escrutinio[primero] \land wp(segundo := primero; primero := i, E_{10})) \lor \\ (escrutinio[i] \leq escrutinio[primero] \land wp(If ..., E_{10}))$\\
+
+\noindent $\equiv 0 \leq i, primero < |escrutinio| \yLuego \\ ((escrutinio[i] > escrutinio[primero] \land wp(segundo := primero, def(i) \yLuego |escrutinio| - i < v_0 + 1)) \lor \\ (escrutinio[i] \leq escrutinio[primero] \land (def(escrutinio[i] > escrutinio[segundo]) \yLuego \\ ((escrutinio[i] > escrutinio[segundo] \land wp(segundo := i, |escrutinio| - i < v_0 + 1) \lor \\ (escrutinio[i] \leq escrutinio[segundo] \land wp(skip, |escrutinio| - i < v_0 + 1))) ) )$\\
+
+\noindent $\equiv 0 \leq i, primero < |escrutinio| \yLuego \\ ((escrutinio[i] > escrutinio[primero] \land def(primero) \yLuego |escrutinio| - i < v_0 + 1) \lor \\ (escrutinio[i] \leq escrutinio[primero] \land (0 \leq i, segundo < |escrutinio| \yLuego \\ ((escrutinio[i] > escrutinio[segundo] \land def(i) \yLuego |escrutinio| - i < v_0 + 1 \lor \\ (escrutinio[i] \leq escrutinio[segundo] \land |escrutinio| - i < v_0 + 1))))))$\\
+
+\noindent $\equiv 0 \leq i, primero < |escrutinio| \yLuego \\ ((escrutinio[i] > escrutinio[primero] \land |escrutinio| - i < v_0 + 1) \lor \\ (escrutinio[i] \leq escrutinio[primero] \land (0 \leq i, segundo < |escrutinio| \yLuego \\ ((escrutinio[i] > escrutinio[segundo] \land |escrutinio| - i < v_0 + 1 \lor \\ (escrutinio[i] \leq escrutinio[segundo] \land |escrutinio| - i < v_0 + 1)))))) \equiv E_{11}$\\
+
+\noindent Asumamos que vale  $I \land B \land v_0 = fv$ y veamos que implica $E_{11}$ \\
+
+\noindent $\equiv ((escrutinio[i] > escrutinio[primero] \land |escrutinio| - i < v_0 + 1) \lor \\ (escrutinio[i] \leq escrutinio[primero] \land (((escrutinio[i] > escrutinio[segundo] \land |escrutinio| - i < v_0 + 1 \lor \\ (escrutinio[i] \leq escrutinio[segundo] \land |escrutinio| - i < v_0 + 1))))))$ \\
+
+\noindent ($v_0 = |escrutinio| - i$)
+
+\noindent $\equiv ((escrutinio[i] > escrutinio[primero] \land v_0 < v_0 + 1) \lor \\ (escrutinio[i] \leq escrutinio[primero] \land (((escrutinio[i] > escrutinio[segundo] \land v_0 < v_0 + 1 \lor \\ (escrutinio[i] \leq escrutinio[segundo] \land v_0< v_0 + 1))))))$ \\
+
+\noindent $\equiv (escrutinio[i] > escrutinio[primero]) \lor \\ (escrutinio[i] \leq escrutinio[primero] \land (escrutinio[i] > escrutinio[segundo] \lor \\ escrutinio[i] \leq escrutinio[segundo]))$ \\
+
+\noindent Y, usando la reescritura del invariante del punto 3, tenemos que asumiendo cada caso por separado esta expresion es verdadera y por lo tanto la tripla vale.
+\newpage 
 
 \subsection{3. $Q_C \rightarrow wp(S_2, Asegura)$} \vspace{0.1cm}
 
 \noindent Calculamos \textbf{wp}($S_2$, Asegura) \\
 
 \noindent \textbf{wp}($res := (primero, segundo)$, Asegura) \vspace{0.1cm} \\
-\noindent $\equiv$ def((primero, segundo)) $\yLuego$ $(0 \leq primero, segundo < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq primero \land  i \neq segundo \implicaLuego escrutinio[i] < escrutinio[segundo] < escrutinio[primero]}$ \\
-\noindent $\equiv$ $(0 \leq primero, segundo < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq primero \land  i \neq segundo \implicaLuego escrutinio[i] < escrutinio[segundo] < escrutinio[primero]} \equiv E_4$ \\
+\noindent $\equiv$ def((primero, segundo)) $\yLuego$ $(0 \leq primero, segundo < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq primero \land  i \neq segundo \implicaLuego escrutinio[i] < escrutinio[segundo]} \land escrutinio[segundo] < escrutinio[primero] $ \\
+\noindent $\equiv$  $(0 \leq primero, segundo < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq primero \land  i \neq segundo \implicaLuego escrutinio[i] < escrutinio[segundo]} \land escrutinio[segundo] < escrutinio[primero] \equiv E_4$ \\
 
-\noindent Quiero ver que $Q_c \rightarrow E_4$, lo cual vale pues son equivalentes. \vspace{0.1cm}
+\noindent Quiero ver que $Q_c \rightarrow E_4$, lo cual vale pues son equivalentes. \vspace{0.1cm}\\
 
+\noindent Una vez probadas (1), (2) y (3) por el corolario de monotonia, el programa es correcto respecto a su especificación.
 
 \end{document}
