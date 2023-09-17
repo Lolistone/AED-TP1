@@ -30,12 +30,12 @@
 
 \noindent Algunas consideraciones que tuvimos al especificar:
 \begin{enumerate} \setlength\itemsep{0cm}
-	\item Un escrutinio tiene al menos dos partidos, y en la ultima posicion estan los votos en blanco.
+	\item Un escrutinio tiene al menos dos partidos, y en la última posición están los votos en blanco.
 	\item Tanto en el escrutinio como en la matriz DHont no hay repetidos.
 	\item Los escrutinios en hayFraude tienen la misma longitud.
-	\item Los votos en el escrutinio y los cocientes de la matriz son numeros mayores o iguales a 0.
-	\item En la matriz DHont los partidos que no pasaron el umbral estaran representados como una lista vacia.
-	\item En las listas de los partidos representamos a hombres con el 1 y mujeres con el 2.
+	\item Los votos en el escrutinio y los cocientes de la matriz son números mayores o iguales a 0.
+	\item En la matriz DHont los partidos que no pasaron el umbral estarán representados como una lista vacía.
+	\item En las listas de los partidos representamos a los hombres con el 1 y las mujeres con el 2.
 \end{enumerate}
 Los predicados y auxiliares utilizados están definidos al final de la sección. \\
 
@@ -167,7 +167,7 @@ endwhile
 res := (total_presidencial = total_senadores) && (total_senadores = total_diputados)
 	\end{lstlisting}
 
-\subsection{Implementacion validarListasDiputadosEnProvincia}
+\subsection{Implementación validarListasDiputadosEnProvincia}
 
 	\begin{lstlisting}[caption={},label=code:for]
 i := 0;
@@ -207,7 +207,7 @@ res := (primero, segundo)
 	\end{lstlisting}
 
 
-\subsection{Demostracion de correctitud de hayFraude}
+\subsection{Demostración de correctitud de hayFraude}
 
 
 
@@ -263,7 +263,7 @@ Si probamos estas tres cosas, por el corolario de monotonía tenemos que, \vspac
 Comencemos eligiendo, \vspace{0.3cm} \\
 $\textbf P_{c} \equiv i=0 \land total\_presidencial = 0 \land total\_senadores = 0 \land total\_diputados = 0 \land \\ |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
 escrutinioValido(escrutinio\_presidente)  \land escrutinioValido(escrutinio\_presidente) \land escrutinioValido(escrutinio\_presidente) \vspace{0.1cm} $
-(Es lo mínimo que podemos pedir basandonos en el Requiere más aplicar S1) \vspace{0.1cm}\\
+(Es lo mínimo que podemos pedir basándonos en el Requiere más aplicar S1) \vspace{0.1cm}\\
 $\textbf Q_{c} \equiv total\_presidencial = totalVotos(escrutinio\_presidencial) \land  total\_diputados = totalVotos(escrutinio\_diputados) \land total\_senadores = totalVotos(escrutinio\_senadores) \land i = |escrutinio\_presidencial| \vspace{0.1cm} $ \\
 (Similar al asegura, con la diferencia de que no hablamos de res) \vspace{0.1cm} \\
 $\textbf B \equiv i < |escrutinio\_presidencial|$ \vspace{0.1cm}\\
@@ -303,7 +303,7 @@ escrutinioValido(escrutinio\_presidente)  \\ \land escrutinioValido(escrutinio\_
 \noindent $ \equiv |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
 escrutinioValido(escrutinio\_presidente) \land escrutinioValido(escrutinio\_senadores) \land \\ escrutinioValido(escrutinio\_diputados) \equiv E_4 \vspace{0.5cm} $
 
-Ahora, como $Requiere \equiv E_4, Requiere \rightarrow E_4$ que es lo que queriamos ver.
+Ahora, como $Requiere \equiv E_4, Requiere \rightarrow E_4$ que es lo que queríamos ver.
 
 \newpage 
 
@@ -326,9 +326,9 @@ Ahora, como $Requiere \equiv E_4, Requiere \rightarrow E_4$ que es lo que queria
 \noindent (1) De $P_c$ deduzco que $|escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_diputados| = |escrutinio\_presidente|$
 \noindent (2) Por un lado, tenemos que $total\_presidente = 0$ y por otro, como i = 0, tengo $\sum\limits_{k=0}^{0 - 1} escrutinio\_presidencial[k] = 0 \vspace{0.1cm}$
 
-\noindent Por lo tanto, $P_c \rightarrow I$, que es lo que queria ver. \vspace{0.1cm}\\
+\noindent Por lo tanto, $P_c \rightarrow I$, que es lo que quería ver. \vspace{0.1cm}\\
 
-\noindent Ahora tenemos que probar que $I \land \neg B \rightarrow Q_c$, o sea, que el invariante y la negacion de la guarda implican la postcondición del ciclo. \vspace{0.1cm}
+\noindent Ahora tenemos que probar que $I \land \neg B \rightarrow Q_c$, o sea, que el invariante y la negación de la guarda implican la postcondición del ciclo. \vspace{0.1cm}
 
 \noindent $I \land \neg B \equiv \\ i = |escrutinio\_presidencial| \yLuego total\_presidencial = \sum\limits_{k=0}^{i - 1} escrutinio\_presidencial[k] \land \\
 0 \leq i \leq |escrutinio\_senadores| \yLuego total\_senadores = \sum\limits_{k=0}^{i - 1} escrutinio\_senadores[k] \land \\
@@ -349,7 +349,7 @@ Ahora, como $Requiere \equiv E_4, Requiere \rightarrow E_4$ que es lo que queria
 
 \noindent Queda entonces probado que I vale al salir del ciclo. \\
 
-\noindent Por ultimo, nos queda probar la tripla de Hoare \{I $\land$ B\}CuerpoDelCiclo\{I\} para demostrar que, en caso de que el ciclo termine, es correcto respecto a la especificación.
+\noindent Por último, nos queda probar la tripla de Hoare \{I $\land$ B\}CuerpoDelCiclo\{I\} para demostrar que, en caso de que el ciclo termine, es correcto respecto a la especificación.
 Para esto debemos probar que I $\land$ B $\rightarrow$ wp(CuerpoDelCiclo, I) \vspace{0.1cm}\\
 
 \noindent Calculamos primero \textbf{wp}(CuerpoDelCiclo, I) \\
@@ -417,7 +417,7 @@ Para esto debemos probar que I $\land$ B $\rightarrow$ wp(CuerpoDelCiclo, I) \vs
 
 \noindent Luego, sabemos que el ciclo, en caso de terminar, es correcto. \\
 
-\noindent Resta probar que el ciclo termina. Para ellos vamos a probar que, \\
+\noindent Resta probar que el ciclo termina. Para ello vamos a probar que, \\
 
 \noindent $I \land fv \leq 0 \rightarrow \neg B$ \\
 
@@ -429,7 +429,7 @@ Para esto debemos probar que I $\land$ B $\rightarrow$ wp(CuerpoDelCiclo, I) \vs
 
 \noindent Calculemos wp(CuerpoDelCiclo, $|escrutinio\_presidencial| - i < v_0$) \\
 
-\noindent Nuevamente, por Axioma 3 calculamos desde la ultima linea del ciclo. \vspace{0.1cm} \\
+\noindent Nuevamente, por Axioma 3 calculamos desde la última línea del ciclo. \vspace{0.1cm} \\
 
 \noindent wp(i := i + 1, $|escrutinio\_presidencial| - i < v_0$) \\
 
@@ -494,15 +494,15 @@ $\equiv def((total\_presidencial = total\_senadores) \land (total\_senadores = t
 \noindent $E_5 \equiv (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) = True \longleftrightarrow \\
 (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) \vspace{0.3cm}$
 
-\noindent Lo cual es una tautologia, por lo tanto $Q_c \rightarrow E_5$ \\
+\noindent Lo cual es una tautología, por lo tanto $Q_c \rightarrow E_5$ \\
 
-\noindent Ya probadas las tres implicaciones (1), (2) y (3) por el corolario de monotonia, el programa es correcto.
+\noindent Ya probadas las tres implicaciones (1), (2) y (3) por el corolario de monotonía, el programa es correcto.
 
 \newpage
 
 \subsection{Demostracion de correctitud de obtenerSenadoresEnProvincia}
 
-Ahora, como en el ejercicio anterior para probar que el algoritmo propuesto es correcto vamos a dividirlo en subprogramas:
+Ahora, como en el ejercicio anterior para probar que el algoritmo propuesto es correcto, vamos a dividirlo en subprogramas:
 
 \vspace{0.3cm}
 
@@ -566,9 +566,9 @@ $\textbf B \equiv i < |escrutinio| - 1 $ \vspace{0.1cm}\\
 (Es la guarda del ciclo) \vspace{0.1cm} \\
 $\textbf I \equiv 0 < i \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land 
 j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio) $ \vspace{0.1cm} \\
-(Como el ciclo incrementa i, primero y segundo son los dos indices de escrutinio donde estan respectivamente los dos valores maximos hasta i) \vspace{0.1cm} \\
+(Como el ciclo incrementa i, primero y segundo son los dos índices de escrutinio donde estan respectivamente los dos valores máximos hasta i) \vspace{0.1cm} \\
 $\textbf{Fv}= |escrutinio| - i $ \\
-(A medida que i aumenta en cada iteracion, fv decrece)
+(A medida que i aumenta en cada iteración, fv decrece)
 
 \newpage
 
@@ -596,7 +596,7 @@ $\textbf{Fv}= |escrutinio| - i $ \\
 \noindent $\equiv$ def(primero := 0) $\yLuego$ $\equiv$ escrutinioValido(escrutinio) $\land$ 0 = 0\\
 \noindent $\equiv$ escrutinioValido(escrutinio) $\equiv$ $E_3$ \\
 
-\noindent Luego, como Requiere $\equiv$ $E_3$, Requiere $\rightarrow$ $E_3$ que es lo que queriamos ver.
+\noindent Luego, como Requiere $\equiv$ $E_3$, Requiere $\rightarrow$ $E_3$ que es lo que queríamos ver.
 
 \subsection{2. $P_c \rightarrow wp(Ciclo, Q_c)$ }
 
@@ -622,8 +622,8 @@ $\textbf{Fv}= |escrutinio| - i $ \\
 	\item noHayEmpate(escrutinio) vale pues esta dento de escrutinioValido(escrutinio)
 \end{itemize}
 
-\noindent (1) Como i = 1, el unico valor que cumple 0 $\leq j < i$ es j = 0, pero como primero y segundo son iguales a cero todo el antecedente es falso.
-Por otro lado, para todo j $\neq$ 0 el antecedente también es falso. Luego, la implicacion siempre es verdadera. \\
+\noindent (1) Como i = 1, el único valor que cumple 0 $\leq j < i$ es j = 0, pero como primero y segundo son iguales a cero todo el antecedente es falso.
+Por otro lado, para todo j $\neq$ 0 el antecedente también es falso. Luego, la implicación siempre es verdadera. \\
 
 \noindent Por lo tanto, $P_c \rightarrow I$ \\
 
@@ -643,7 +643,7 @@ Por otro lado, para todo j $\neq$ 0 el antecedente también es falso. Luego, la 
 \noindent (1) vale pues tengo que  $\paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[i]< escrutinio[segundo]} \land i = |escrutinio| - 1$  \\
 \noindent (2) vale pues escrutinio[segundo] $\leq$ escrutinio[primero] $\land$ noHayEmpate(escrutinio) \\
 
-\noindent Queda entonces probado lo que queriamos ver. \\
+\noindent Queda entonces probado lo que queríamos ver. \\
 
 \noindent 3. Para probar la tripla, quiero ver que $I \land B \rightarrow wp(CuerpoDelCiclo, I)$ \\
 
@@ -698,8 +698,8 @@ j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \land escrutin
 
 \noindent Lo que necesito es probar que $I \land B \rightarrow E_9$ para eso, voy a reescribir el Invariante de otra manera, para eso primero voy a mirar lo siguiente, \\
 
-\noindent Si tengo 3 numero enteros, sean a, b y c,  donde sé que no hay repetidos (en este caso el noHayEmpates me lo garantizaria), tengo $3!$ maneras de ordenarlos, $(a < b < c) \lor (a < c < b) \lor (b < a <c) \lor (b < c < a) \lor (c < a < b) \lor (c < b <  a)$. Pero si además, pido que a $>$ b, (En este caso me lo garantiza,
-que escrutinio[primero] $>$ escrutinio[segundo]) me quedo solo con 3 posibilidades que son $(b < a < c) \lor (b < c < a) \lor (c < b < a)$ \\
+\noindent Si tengo 3 numero enteros, sean a, b y c,  donde sé que no hay repetidos (en este caso el noHayEmpates me lo garantizaría), tengo $3!$ maneras de ordenarlos, $(a < b < c) \lor (a < c < b) \lor (b < a <c) \lor (b < c < a) \lor (c < a < b) \lor (c < b <  a)$. Pero si además, pido que a $>$ b, (En este caso me lo garantiza,
+que escrutinio[primero] $>$ escrutinio[segundo]) me quedo solo con 3 posibilidades que son $(b < a < c) \lor (b < c < a) \lor (c < b < a)$. \\
 
 \noindent $I \equiv I \land True \equiv I \land (escrutinio[i] < escrutinio[segundo] < escrutinio[primero] \lor escrutinio[segundo] < escrutinio[i] < escrutinio[primero] \lor escrutinio[segundo] < escrutinio[primero] < escrutinio[i])$ \\
 
@@ -733,8 +733,8 @@ $ \\
 
 \noindent $E_7 \equiv \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \implicaLuego escrutinio[j] < escrutinio[primero]} $ \\
 
-\noindent (Veamos que ocurre cuando el antecedente es verdadero, escrutinio[j] $<$ escrutinio[primero] tambien lo es
-puesto que en el invariante tenemos que j no es el primero ni el segundo entonces es menor al segundo y ademas tenemos que escrutinio[segundo] $<$ escrutinio[primero]. Si j = segundo los escrutinios serian iguales, entonces escrutinio[j] $<$ escrutinio[primero], sigue valiendo)\\
+\noindent (Veamos que ocurre cuando el antecedente es verdadero, escrutinio[j] $<$ escrutinio[primero] también lo es,
+puesto que en el invariante tenemos que j no es el primero ni el segundo entonces es menor al segundo y además tenemos que escrutinio[segundo] $<$ escrutinio[primero]. Si j = segundo los escrutinios serían iguales, entonces escrutinio[j] $<$ escrutinio[primero], sigue valiendo)\\
 
 \noindent $E_7 \equiv True \rightarrow E_9 \equiv True $ pues es una unión
 
@@ -755,7 +755,7 @@ puesto que en el invariante tenemos que j no es el primero ni el segundo entonce
 \noindent $\equiv
 ((escrutinio[i] > escrutinio[segundo] \land \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq i \implicaLuego escrutinio[j] < escrutinio[i]} \\ \land escrutinio[i] \leq escrutinio[primero] \land noHayEmpate(escrutinio)) $\\ 
 
-\noindent (escrutinio[i] $>$ escrutinio[segundo] y escrutinio[i] $\leq$ escrutinio[primero] valen por la hipotesis, y noHayEmpate(escrutinio) es trivial) \\
+\noindent (escrutinio[i] $>$ escrutinio[segundo] y escrutinio[i] $\leq$ escrutinio[primero] valen por la hipótesis, y noHayEmpate(escrutinio) es trivial) \\
 
 \noindent $\equiv
 \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \implicaLuego escrutinio[j] < escrutinio[i]} $\\ 
@@ -776,24 +776,24 @@ $ \\
 (escrutinio[i] \leq escrutinio[segundo] \land  0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \\ 
 \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio)))$ \\
 
-\noindent (escrtunio[i] $>$ escrutinio[segundo] $\equiv$ False, luego el lado izquierdo del or es falso) \\
+\noindent (escrutinio[i] $>$ escrutinio[segundo] $\equiv$ False, luego el lado izquierdo del or es falso) \\
 
 \noindent $E_8 \equiv  0 \leq i, segundo < |escrutinio| \yLuego \\ 
 (escrutinio[i] \leq escrutinio[segundo] \land  0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \\ 
 \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio))$ \\
 
-\noindent (Los indicen estan en rango) \\
+\noindent (Los indices estan en rango) \\
 
 \noindent $E_8 \equiv
 (escrutinio[i] \leq escrutinio[segundo] \land \\
 \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio))$ \\
 
-\noindent (escrutinio[i] $\leq$ escrutinio[segundo] y escrutinio[segundo] $\leq$ escrutinio[primero] salen de la hipotesis) \\
+\noindent (escrutinio[i] $\leq$ escrutinio[segundo] y escrutinio[segundo] $\leq$ escrutinio[primero] salen de la hipótesis) \\
 
 \noindent $E_8 \equiv
 \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]}$ \\
 
-\noindent (Para todos los casos donde el atecedente es verdadero y j no es i, la expresion es verdadera pues aparece en el invariante. Por otro lado, cuando j = i y cumple el precedente, tambien vale por nuestra hipotesis de que escrutinio[i] $<$ escrutinio[segundo] $<$ escrutinio[primero]) \\
+\noindent (Para todos los casos donde el antecedente es verdadero y j no es i, la expresion es verdadera pues aparece en el invariante. Por otro lado, cuando j = i y cumple el precedente, tambien vale por nuestra hipótesis de que escrutinio[i] $<$ escrutinio[segundo] $<$ escrutinio[primero]) \\
 
 \noindent $E_8 \equiv True \rightarrow E_9 \equiv True$ \\
 
@@ -840,6 +840,6 @@ $ \\
 
 \noindent Quiero ver que $Q_c \rightarrow E_4$, lo cual vale pues son equivalentes. \vspace{0.1cm}\\
 
-\noindent Una vez probadas (1), (2) y (3) por el corolario de monotonia, el programa es correcto respecto a su especificación.
+\noindent Una vez probadas (1), (2) y (3) por el corolario de monotonía, el programa es correcto respecto a su especificación.
 
 \end{document}
