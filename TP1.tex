@@ -55,7 +55,7 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 	%    \modifica{parametro1, parametro2,..}
 	\requiere{|escrutinio\_presidencial| = |escrutinio\_senadores| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
 	escrutinioValido(escrutinio\_presidencial) \land escrutinioValido(escrutinio\_senadores) \\ \land escrutinioValido(escrutinio\_presidencial)}
-	\asegura{res = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados)}
+	\asegura{res = True \longleftrightarrow \neg (totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados))}
 \end{proc}
 
 \subsection{Ejercicio 3}
@@ -63,8 +63,8 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \begin{proc}{obtenerSenadoresEnProvincia}{\In escrutinio : \TLista{\ent}}{$\ent \times \ent$}
 	%    \modifica{parametro1, parametro2,..}
 	\requiere{escrutinioValido(escrutinio)}
-	\asegura{(0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0}
-	i \neq res_{1} \implicaLuego \\ escrutinio[i] < escrutinio[res_{1}]} \land res_{1} < res_{0}} 
+	\asegura{(0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0} \land
+	i \neq res_{1} \implicaLuego \\ escrutinio[i] < escrutinio[res_{1}]} \land escrutinio[res_{1}] < escrutinio[res_{0}]} 
 \end{proc}
 
 \subsection{Ejercicio 4}
@@ -83,7 +83,7 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \begin{proc}{obtenerDiputadosEnProvincia}{\In cant\_bancas : \ent, \In escrutinio : \TLista{\ent} \In DHont : \TLista{\TLista{\ent}}}{\TLista{\ent}}
 	%    \modifica{parametro1, parametro2,..}
 	\requiere{cant\_bancas > 0 \yLuego dHontValida(DHont, cant\_bancas, escrutinio)}
-	\asegura{|res| = |DHont| \yLuego \\ \paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \implicaLuego res[i] = \sum\limits_{j=0}^{|DHont[i]|-1} \IfThenElse{cant\_bancas > \#cocientesMayores(DHont[i][j], DHont)}{1}{0}}}
+	\asegura{|res| = |DHont| \yLuego \\ \paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \implicaLuego res[i] = \sum\limits_{j=0}^{|DHont[i]|-1} \IfThenElse{cant\_bancas > \#cocientesMayores(i, j, DHont)}{1}{0}}}
 	 
 \end{proc}
 
@@ -93,7 +93,7 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 
 \begin{proc}{validarListasDiputadosEnProvincia}{\In cant\_bancas : \ent, \In listas : \TLista{\TLista{dni : \ent \times genero : \ent}}}{Bool}
 	%    \modifica{parametro1, parametro2,..}
-	\requiere{cant\_bancas > 0 \land generosValidos(listas)}
+	\requiere{cant\_bancas > 0 \land generosValidos(listas)  \land dniValidos(listas)}
 	\asegura{res = True \longleftrightarrow \\
 \paraTodo[unalinea]{i}{\ent}{0 \leq i < |listas| \implicaLuego  |listas[i]|= cant\_bancas} \land \\ 
 \paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| - 1 \yLuego listas[i][j]_{1} = 1 \implicaLuego  listas[i][j+1]_{1} = 2 } \land \\  \paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| - 1 \yLuego listas[i][j]_{1} = 2 \implicaLuego  listas[i][j+1]_{1} = 1 }}
@@ -102,7 +102,7 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \subsection{Predicados y Auxiliares}
 
 \aux{porcentaje}{\In partido : {\ent}, \In escrutinio : \TLista{\ent}}{\ent}{(escrutinio[partido] * 100) / totalVotos(escrutinio)}
-\aux{\#cocientesMayores}{\In i : \ent, \In j : \ent, \In DHont : \TLista{\TLista{\ent}}}{\ent}{\\ \sum\limits_{r=0}^{|DHont[i]|-1} \sum\limits_{k=0}^{|DHont|-1} \IfThenElse{DHont[k][r] > DHont[i][j]}{1}{0}}
+\aux{\#cocientesMayores}{\In i : \ent, \In j : \ent, \In DHont : \TLista{\TLista{\ent}}}{\ent}{\\ \sum\limits_{k=0}^{|DHont|-1} \sum\limits_{r=0}^{|DHont[k]|-1} \IfThenElse{DHont[k][r] > DHont[i][j]}{1}{0}}
 \aux{totalVotos}{\In escrutinio : \TLista{\ent}}{\ent}{\sum\limits_{i=0}^{|escrutinio|-1} escrutinio[i]}
 \pred{noHayEmpate}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i,j < |escrutinio| - 1  \land i \neq j  \implicaLuego escrutinio[i] \neq escrutinio[j] }}
 \pred{votosValidos}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| \implicaLuego escrutinio[i] \geq 0 }}
@@ -132,7 +132,7 @@ endwhile
 primero := 0;
 segundo := 0;
 j := 0;
-while (i < escrutinio.size() - 1) do
+while (j < escrutinio.size() - 1) do
 	if (escrutinio[j] > primero) then
 		segundo := primero;
 		primero := escrutinio[j];
@@ -164,14 +164,14 @@ while (i < escrutinio_presidencial.size()) do
 	total_diputados := total_diputados + escrutinio_diputados[i];
 	i := i + 1
 endwhile
-res := (total_presidencial = total_senadores) && (total_senadores = total_diputados)
+res := not ((total_presidencial = total_senadores) && (total_senadores = total_diputados))
 	\end{lstlisting}
 
 \subsection{Implementación validarListasDiputadosEnProvincia}
 
 	\begin{lstlisting}[caption={},label=code:for]
 i := 0;
-res := True
+res := cant_bancas = |listas[0]|
 while (i < listas.size() - 1) do
 	res := res && |listas[i]| = |listas[i+1]|
 endwhile
@@ -187,8 +187,12 @@ endwhile
 \subsection{Implementación de obtenerSenadoresEnProvincia}
 
 	\begin{lstlisting}[caption={},label=code:for]
-primero := 0;
-segundo := 0;
+if (escrutinio[0] > escrutinio[1]) then
+	primero := 0;
+	segundo := 1;
+else
+	primero := 1;
+	segundo := 0;
 i := 1;
 while (i < escrutinio.size() - 1) do
 	if (escrutinio[i] > escrutinio[primero]) then
@@ -297,7 +301,7 @@ escrutinioValido(escrutinio\_presidente)  \\ \land escrutinioValido(escrutinio\_
 \noindent $ \equiv i=0 \land total\_presidente = 0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \land \\ |escrutinio\_senadores| = |escrutinio\_diputados| \land
 escrutinioValido(escrutinio\_presidente) \land \\ escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \equiv E_3 \vspace{0.5cm} $
 
-\noindent $\textbf{wp}(total\_presidente := 0, E_3) \equiv def(0) \yLuego 0=0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \\ \land |escrutinio\_senadores| = |escrutinio\_diputados| \land
+\noindent $\textbf{wp}(i := 0, E_3) \equiv def(0) \yLuego 0=0 \land |escrutinio\_senadores| = |escrutinio\_presidente| \\ \land |escrutinio\_senadores| = |escrutinio\_diputados| \land
 escrutinioValido(escrutinio\_presidente)  \\ \land escrutinioValido(escrutinio\_senadores) \land escrutinioValido(escrutinio\_diputados) \vspace{0.1cm} $
 
 \noindent $ \equiv |escrutinio\_senadores| = |escrutinio\_presidente| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
@@ -508,8 +512,12 @@ Ahora, como en el ejercicio anterior para probar que el algoritmo propuesto es c
 
 $S_1$
 	\begin{lstlisting}[caption={},label=code:for]
-primero := 0;
-segundo := 0;
+if (escrutinio[0] > escrutinio[1]) then
+	primero := 0;
+	segundo := 1;
+else
+	primero := 1;
+	segundo := 0;
 i := 1;
 	\end{lstlisting}
 
@@ -557,15 +565,15 @@ Si probamos estas tres cosas, por el corolario de monotonía tenemos que, \vspac
 \vspace{0.3cm}
 
 Comencemos eligiendo, \vspace{0.3cm} \\
-$\textbf P_{c} \equiv escrutinioValido(escrutinio) \land i = 1 \land segundo = 0 \land primero = 0 $ \vspace{0.1cm} \\
+$\textbf P_{c} \equiv escrutinioValido(escrutinio) \land i = 1 \land 0 \leq primero, segundo < 2 \land  primero \neq segundo \land \\ escrutinio[segundo] <escrutinio[primero] $ \vspace{0.1cm} \\
 (Es el requiere mas las instrucciones previas al ciclo) \vspace{0.1cm} \\
-$\textbf Q_{c} \equiv (0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0}
+$\textbf Q_{c} \equiv (0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0}  \land
 i \neq res_{1} \implicaLuego \\ escrutinio[i] < escrutinio[res_{1}]} \land escrutinio[res_{1}] < escrutinio[res_{0}] \vspace{0.1cm} $ \\
 (Similar al asegura, con la diferencia de que no hablamos de res) \vspace{0.1cm} \\
 $\textbf B \equiv i < |escrutinio| - 1 $ \vspace{0.1cm}\\
 (Es la guarda del ciclo) \vspace{0.1cm} \\
-$\textbf I \equiv 0 < i \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land 
-j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio) $ \vspace{0.1cm} \\
+$\textbf I \equiv 0 < i \leq |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i + 1 \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land 
+j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] < escrutinio[primero]  \land noHayEmpate(escrutinio)$ \vspace{0.1cm} \\
 (Como el ciclo incrementa i, primero y segundo son los dos índices de escrutinio donde estan respectivamente los dos valores máximos hasta i) \vspace{0.1cm} \\
 $\textbf{Fv}= |escrutinio| - i $ \\
 (A medida que i aumenta en cada iteración, fv decrece)
@@ -576,27 +584,58 @@ $\textbf{Fv}= |escrutinio| - i $ \\
 
 \noindent Primero calculo \textbf{wp($S_1$, $P_c$)} \\
 
-\noindent \textbf{wp$(primero := 0 ;segundo := 0 ;i:= 1, P_c)$} \\
+\noindent \textbf{wp$(If ...; i := 1, P_c)$} \\
 
 \noindent (Utilizando el Axioma 3)\\
 
-\noindent \textbf{wp$(primero := 0, wp(segundo := 0, wp(i:=1, P_c)))$}\\
+\noindent \textbf{wp$(if ..., wp(i:=1, P_c))$}\\
 
 \noindent Calculemos entonces, \\
 
 \noindent \textbf{wp$(i:=1, P_c)$} \vspace{0.1cm} \\
-\noindent $\equiv$ def(i := 1) $\yLuego$ $\equiv$ escrutinioValido(escrutinio) $\land$ 1 = 1 $\land$ segundo = 0 $\land$ primero = 0 \\
-\noindent $\equiv$ escrutinioValido(escrutinio) $\land$ segundo = 0 $\land$ primero = 0 $\equiv$ $E_1$ \\
+\noindent $\equiv$ def(i := 1) $\yLuego$  escrutinioValido(escrutinio) $\land$ 1 = 1 $\land$ 0 $\leq$ primero, segundo $<$ 2 $\land  primero \neq segundo$ $\land$ \\ escrutinio[segundo] $<$ escrutinio[primero] \\
+\noindent $\equiv$ escrutinioValido(escrutinio) $\land$ 0 $\leq$ primero, segundo $<$ 2 $\land$  $primero \neq segundo$ $\land$ escrutinio[segundo] $<$ escrutinio[primero]  $\equiv$ $E_1$ \\
 
-\noindent \textbf{wp$(segundo :=0, E_1)$} \vspace{0.1cm} \\
-\noindent $\equiv$ def(segundo := 0) $\yLuego$ $\equiv$ escrutinioValido(escrutinio) $\land$ 0 = 0 $\land$ primero = 0 \\
-\noindent $\equiv$ escrutinioValido(escrutinio) $\land$ primero = 0 $\equiv$ $E_2$ \\
+\noindent \textbf{wp$(If... , E_1)$} \vspace{0.1cm} \\
+\noindent $\equiv$ def(escrutinio[0] $>$ escrutinio[1]) $\yLuego$ \\  ((escrutinio[0] $>$ escrutinio[1]  $\land$ wp(primero := 0; segundo := 1, $E_1$)) $\lor$ \\
+(escrutinio[0] $<$ escrutinio[1] $\land$ wp(primero := 1; segundo := 0; $E_1$)))  \vspace{0.1cm} \\
 
-\noindent \textbf{wp$(primero :=0, E_2)$} \vspace{0.1cm} \\
-\noindent $\equiv$ def(primero := 0) $\yLuego$ $\equiv$ escrutinioValido(escrutinio) $\land$ 0 = 0\\
-\noindent $\equiv$ escrutinioValido(escrutinio) $\equiv$ $E_3$ \\
+\noindent Analizamos las wp que quedan dentro por separado \\
 
-\noindent Luego, como Requiere $\equiv$ $E_3$, Requiere $\rightarrow$ $E_3$ que es lo que queríamos ver.
+\noindent \textbf{wp$(primero := 0; segundo := 1, E_1)$} \vspace{0.1cm} \\
+
+\noindent $\equiv def(segundo := 1) \yLuego escrutinioValido(escrutinio) \land 0 \leq primero, 1 < 2 \land primero \neq 1 \land escrutinio[1] < escrutinio[primero] $ \\
+\noindent $\equiv def(primero := 0) \yLuego escrutinioValido(escrutinio) \land 0 \leq 0, 1 < 2 \land 0 \neq 1 \land escrutinio[1] < escrutinio[0] $ \\
+\noindent $\equiv escrutinioValido(escrutinio) \land escrutinio[1] < escrutinio[0] $ \\
+
+ \noindent \textbf{wp$(primero := 1; segundo := 0, E_1)$} \vspace{0.1cm} \\
+
+\noindent $\equiv def(segundo := 0) \yLuego escrutinioValido(escrutinio) \land 0 \leq primero, 0 < 2 \land primero \neq 0 \land escrutinio[0] < escrutinio[primero] $ \\
+\noindent $\equiv def(primero := 1) \yLuego escrutinioValido(escrutinio) \land 0 \leq 1, 0 < 2 \land 1 \neq 0 \land escrutinio[0] < escrutinio[1] $ \\
+\noindent $\equiv escrutinioValido(escrutinio) \land escrutinio[0] < escrutinio[1] $ \\
+
+\noindent Tenemos entonces, \\
+
+\noindent \textbf{wp$(If... , E_1)$}
+\noindent $\equiv$ $0 \leq 0, 1 < |escrutinio|$ $\yLuego$ \\  ((escrutinio[0] $>$ escrutinio[1]  $\land$ $escrutinioValido(escrutinio)$) $\lor$ \\
+(escrutinio[0] $<$ escrutinio[1] $\land$ $escrutinioValido(escrutinio)$)) \\
+
+\noindent $\equiv$ $0 \leq 0, 1 < |escrutinio|$ $\yLuego$ escrutinioValido(escrutinio) $\land$ ((escrutinio[0] $>$ escrutinio[1]) $\lor$
+(escrutinio[0] $<$ escrutinio[1])) $\equiv E_2$ \vspace{0.1cm} \\
+
+\noindent Luego, basta probar que Requiere $\rightarrow$ $E_2$
+
+\begin{enumerate}\setlength{\itemindent}{0.5cm}
+		\item  $0 \leq 0, 1 < |escrutinio|$
+		\item  escrutinioValido(escrutinio) (Aparece la misma expresión en el requiere)
+		\item (escrutinio[0] $>$ escrutinio[1]) $\lor$ (escrutinio[0] $<$ escrutinio[1])
+\end{enumerate}
+
+\noindent Sé, que 1 vale pues por escrutinioValido(escrutinio) tengo que $|escrutinio| > 2$. Por otro lado, también por escrutinioValido, sé que no hay empate para índices (partidos) distintos, entonces tengo que como 1 $\neq$ 0 \\ o $escrutinio[1] > escrutinio[0]$ o $escrutinio[0] > escrutinio[1]$ \\
+
+\noindent Por lo tanto, Requiere $\rightarrow E_2$ \\
+
+\newpage
 
 \subsection{2. $P_c \rightarrow wp(Ciclo, Q_c)$ }
 
@@ -616,13 +655,13 @@ $\textbf{Fv}= |escrutinio| - i $ \\
 
 \begin{itemize}\setlength{\itemindent}{0.5cm}
 	\item  $0 < i \leq |escrutinio| - 1$ vale pues i = 1 y $|escrutinio| > 2.$
-	\item $0 \leq primero, segundo < i$ vale pues i = 1, segundo = 0 y primero = 0.
+	\item $0 \leq primero, segundo < i + 1 $ vale pues i = 1 y la expresion aparece en $P_C$
 	\item  $\paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land  j \neq segundo \implicaLuego  escrutinio[j] < escrutinio[segundo]}  (1)$
-	\item escrutinio[segundo] $\leq$ escrutinio[primero] vale pues escrutinio[0] $\leq$ escrutinio[0]
+	\item escrutinio[segundo] $\leq$ escrutinio[primero] vale pues aparece en la pre del ciclo.
 	\item noHayEmpate(escrutinio) vale pues esta dento de escrutinioValido(escrutinio)
 \end{itemize}
 
-\noindent (1) Como i = 1, el único valor que cumple 0 $\leq j < i$ es j = 0, pero como primero y segundo son iguales a cero todo el antecedente es falso.
+\noindent (1) Como i = 1, el único valor que cumple 0 $\leq j < i$ es j = 0, pero como primero y segundo son 1 y 0 respectivamente, o viceversa pues estan entre 0 y 1 inclusive y primero es distinto de segundo todo el antecedente es falso.
 Por otro lado, para todo j $\neq$ 0 el antecedente también es falso. Luego, la implicación siempre es verdadera. \\
 
 \noindent Por lo tanto, $P_c \rightarrow I$ \\
@@ -641,7 +680,7 @@ Por otro lado, para todo j $\neq$ 0 el antecedente también es falso. Luego, la 
 
 
 \noindent (1) vale pues tengo que  $\paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[i]< escrutinio[segundo]} \land i = |escrutinio| - 1$  \\
-\noindent (2) vale pues escrutinio[segundo] $\leq$ escrutinio[primero] $\land$ noHayEmpate(escrutinio) \\
+\noindent (2) vale pues escrutinio[segundo] < escrutinio[primero] \\
 
 \noindent Queda entonces probado lo que queríamos ver. \\
 
