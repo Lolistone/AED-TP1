@@ -115,6 +115,9 @@ DHont[i][j] \neq DHont[k][r]}}
 \pred{dHontValida}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent, \In escrutinio : \TLista{\ent}}{
 |escrutinio| - 1 = |DHont| \land filasValidas(DHont, cant\_bancas) \land cocientesPositivos(DHont) \land cocientesDistintos(DHont)} 
 \pred{generosValidos}{\In Listas : \TLista{\TLista{\ent \times \ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| \implicaLuego listas[i][j]_{1} = 1 \lor  listas[i][j]_{1} = 2}}
+\pred{dniValidos}{\In lista : \TLista{\TLista{\ent \times \ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |lista| \yLuego 0 \leq j, r < |lista[i]| \land
+|lista[i]| = |lista[k]| \land (i \neq k \lor j \neq r) \implicaLuego 
+lista[i][j] \neq lista[k][r]} \land \\ \paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |lista| \yLuego 0 \leq j < |lista[i]| \implicaLuego lista[i][j]_{0} > 0}}
 
 \newpage
 
@@ -245,7 +248,7 @@ $S_2$
 
 
 	\begin{lstlisting}[caption={},label=code:for]
-res := (total_presidencial = total_senadores) && (total_senadores = total_diputados)
+res := not (total_presidencial = total_senadores) && (total_senadores = total_diputados)
 	\end{lstlisting}
 
 \vspace{0.3cm}
@@ -478,11 +481,11 @@ Para esto debemos probar que I $\land$ B $\rightarrow$ wp(CuerpoDelCiclo, I) \vs
 \subsection{3. $Q_C \rightarrow wp(S_2, Asegura)$}
 
 \noindent Calculamos \textbf{wp}($S_2$, Asegura) \vspace{0.1cm} \\
-\noindent \textbf{wp}($res := (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados)$, Asegura) \vspace{0.1cm} \\
-$\equiv def((total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados)) \yLuego \\ 
-(total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) = True \longleftrightarrow \\ totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados) \vspace{0.1cm} $
+\noindent \textbf{wp}($res := \neg (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados)$, Asegura) \vspace{0.1cm} \\
+$\equiv def(\neg (total\_presidencial = total\_senadores \land total\_senadores = total\_diputados)) \yLuego \\ 
+\neg (total\_presidencial = total\_senadores \land total\_senadores = total\_diputados) = True \longleftrightarrow \\ \neg ( totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados) ) \vspace{0.1cm} $
 
-\noindent $\equiv (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) = True \longleftrightarrow totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados  \equiv E_5 \vspace{0.3cm}$
+\noindent $\equiv \neg (total\_presidencial = total\_senadores \land total\_senadores = total\_diputados) = True \longleftrightarrow \neg  (totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados)) \equiv E_5 \vspace{0.3cm}$
 
 \noindent Quiero ver que $Q_c \rightarrow E_5 \vspace{0.1cm}$
 
@@ -495,8 +498,8 @@ $\equiv def((total\_presidencial = total\_senadores) \land (total\_senadores = t
 
 \noindent  Luego, \\
 
-\noindent $E_5 \equiv (total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) = True \longleftrightarrow \\
-(total\_presidencial = total\_senadores) \land (total\_senadores = total\_diputados) \vspace{0.3cm}$
+\noindent $E_5 \equiv \neg (total\_presidencial = total\_senadores \land total\_senadores = total\_diputados) = True \longleftrightarrow \\
+\neg (total\_presidencial = total\_senadores \land total\_senadores = total\_diputados)\vspace{0.3cm}$
 
 \noindent Lo cual es una tautología, por lo tanto $Q_c \rightarrow E_5$ \\
 
@@ -550,7 +553,7 @@ res := (primero, segundo)
 
 \vspace{0.3cm}
 
-Y, luego probaremos que,
+\noindent Y, luego probaremos que,
 
 
 \begin{enumerate}\setlength{\itemindent}{0.5cm}
@@ -559,12 +562,12 @@ Y, luego probaremos que,
 		\item $Q_c$ $\rightarrow$ wp($S_2$, Asegura)
 \end{enumerate}
 
-Si probamos estas tres cosas, por el corolario de monotonía tenemos que, \vspace{0.2cm} \\
+\noindent Si probamos estas tres cosas, por el corolario de monotonía tenemos que, \vspace{0.2cm} \\
 \indent \qquad \quad Requiere $\rightarrow$ wp(obtenerSenadoresEnProvincia, Asegura)
 
 \vspace{0.3cm}
 
-Comencemos eligiendo, \vspace{0.3cm} \\
+\noindent Comencemos eligiendo, \vspace{0.3cm} \\
 $\textbf P_{c} \equiv escrutinioValido(escrutinio) \land i = 2 \land 0 \leq primero, segundo < 2 \land  primero \neq segundo \land \\ escrutinio[segundo] <escrutinio[primero] $ \vspace{0.1cm} \\
 (Es el requiere mas las instrucciones previas al ciclo) \vspace{0.1cm} \\
 $\textbf Q_{c} \equiv (0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0}  \land
@@ -598,13 +601,13 @@ $\textbf{Fv}= |escrutinio| - i $ \\
 
 \noindent \textbf{wp$(If... , E_1)$} \vspace{0.1cm} \\
 \noindent $\equiv$ def(escrutinio[0] $>$ escrutinio[1]) $\yLuego$ \\  ((escrutinio[0] $>$ escrutinio[1]  $\land$ wp(primero := 0; segundo := 1, $E_1$)) $\lor$ \\
-(escrutinio[0] $<$ escrutinio[1] $\land$ wp(primero := 1; segundo := 0; $E_1$)))  \vspace{0.1cm} \\
+(escrutinio[0] $\leq$ escrutinio[1] $\land$ wp(primero := 1; segundo := 0; $E_1$)))  \vspace{0.1cm} \\
 
 \noindent Analizamos las wp que quedan dentro por separado \\
 
 \noindent \textbf{wp$(primero := 0; segundo := 1, E_1)$} \vspace{0.1cm} \\
 
-\noindent $\equiv$ def(segundo := 1) $\yLuego$ escrutinioValido(escrutinio) $\land$ 0 $\leq$ primero, 1 < 2 $\land$ primero $\neq$ 1 $\land$ escrutinio[1] $<$ escrutinio[primero] \\
+\noindent $\equiv$ def(segundo := 1) $\yLuego$ escrutinioValido(escrutinio) $\land$ 0 $\leq$ primero, 1 $<$ 2 $\land$ primero $\neq$ 1 $\land$ escrutinio[1] $<$ escrutinio[primero] \\
 \noindent $\equiv def(primero := 0) \yLuego escrutinioValido(escrutinio) \land 0 \leq 0, 1 < 2 \land 0 \neq 1 \land escrutinio[1] < escrutinio[0] $ \\
 \noindent $\equiv escrutinioValido(escrutinio) \land escrutinio[1] < escrutinio[0] $ \\
 
@@ -657,7 +660,7 @@ $\textbf{Fv}= |escrutinio| - i $ \\
 	\item  $0 < i \leq |escrutinio| - 1$ vale pues i = 2 y $|escrutinio| > 2.$
 	\item $0 \leq primero, segundo < i  $ vale pues i = 2 y la expresion aparece en $P_C$
 	\item  $\paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land  j \neq segundo \implicaLuego  escrutinio[j] < escrutinio[segundo]}  (1)$
-	\item escrutinio[segundo] $\leq$ escrutinio[primero] vale pues aparece en la pre del ciclo.
+	\item escrutinio[segundo] $<$ escrutinio[primero] vale pues aparece en la pre del ciclo.
 	\item noHayEmpate(escrutinio) vale pues esta dento de escrutinioValido(escrutinio)
 \end{itemize}
 
@@ -668,7 +671,7 @@ Por otro lado, para todo j $\neq$ 0 o 1 el antecedente también es falso. Luego,
 
 \noindent 2. Asumiendo $I \land \neg B$ válido, donde \\
 
-\noindent $I \land \neg B$ $\equiv$ $ i = |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] \leq escrutinio[primero] \land noHayEmpate(escrutinio)$ \\
+\noindent $I \land \neg B$ $\equiv$ $ i = |escrutinio| - 1 \yLuego  0 \leq primero, segundo < i \yLuego \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \land j \neq segundo \implicaLuego \\ escrutinio[j] < escrutinio[segundo]} \land escrutinio[segundo] < escrutinio[primero] \land noHayEmpate(escrutinio)$ \\
 
 \noindent Quiero probar que vale $Q_c$
 
@@ -711,7 +714,7 @@ j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \land escrutin
 
 \noindent $wp(primero := i, E_5) \equiv def(i) \yLuego 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq i, segundo < i + 1 \yLuego i \neq segundo \land \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \land \\ escrutinio[segundo] < escrutinio[i] \land noHayEmpate(escrutinio)$ \\
 
-\noindent $ \equiv 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq i, segundo < i + 1 \yLuego i \neq segundo \land\\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] \leq escrutinio[i] \land noHayEmpate(escrutinio) \equiv E_6$ \\
+\noindent $ \equiv 0 < i + 1 \leq |escrutinio| - 1 \yLuego  0 \leq i, segundo < i + 1 \yLuego i \neq segundo \land\\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq i \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] < escrutinio[i] \land noHayEmpate(escrutinio) \equiv E_6$ \\
 
 \noindent \textbf{wp}(segundo := primero, $E_6$)  \\
 
@@ -777,7 +780,7 @@ $ \\
 \noindent (Veamos que ocurre cuando el antecedente es verdadero, escrutinio[j] $<$ escrutinio[primero] también lo es,
 puesto que en el invariante tenemos que j no es el primero ni el segundo entonces es menor al segundo y además tenemos que escrutinio[segundo] $<$ escrutinio[primero]. Si j = segundo los escrutinios serían iguales, entonces escrutinio[j] $<$ escrutinio[primero], sigue valiendo)\\
 
-\noindent $E_7 \equiv True \rightarrow E_9 \equiv True $ pues es una unión
+\noindent $E_7 \equiv True \rightarrow E_9 \equiv True $ pues es una unión \\
 
 \noindent Segundo caso, $escrutinio[segundo] < escrutinio[i] < escrutinio[primero]$ \\
 
@@ -796,7 +799,7 @@ puesto que en el invariante tenemos que j no es el primero ni el segundo entonce
 \noindent $\equiv
 ((escrutinio[i] > escrutinio[segundo] \land \\ \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq i \implicaLuego escrutinio[j] < escrutinio[i]} \\ \land escrutinio[i] < escrutinio[primero] \land noHayEmpate(escrutinio)) $\\ 
 
-\noindent (escrutinio[i] $>$ escrutinio[segundo] y escrutinio[i] $\leq$ escrutinio[primero] valen por la hipótesis, y noHayEmpate(escrutinio) es trivial) \\
+\noindent (escrutinio[i] $>$ escrutinio[segundo] y escrutinio[i] $<$ escrutinio[primero] valen por la hipótesis, y noHayEmpate(escrutinio) es trivial) \\
 
 \noindent $\equiv
 \paraTodo[unalinea]{j}{\ent}{0 \leq j < i \land j \neq primero \implicaLuego escrutinio[j] < escrutinio[i]} $\\ 
@@ -825,7 +828,7 @@ si j no es igual al segundo, escrutinio[j] $<$ escrutinio[segundo], y en consecu
 (escrutinio[i] \leq escrutinio[segundo] \land \\
 \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]} \\ \land escrutinio[segundo] < escrutinio[primero] \land noHayEmpate(escrutinio))$ \\
 
-\noindent (escrutinio[i] $\leq$ escrutinio[segundo] y escrutinio[segundo] < escrutinio[primero] salen de la hipótesis) \\
+\noindent (escrutinio[i] $<$ escrutinio[segundo] y escrutinio[segundo] $<$ escrutinio[primero] salen de la hipótesis) \\
 
 \noindent $E_8 \equiv
 \paraTodo[unalinea]{j}{\ent}{0 \leq j < i + 1 \land j \neq primero \land j \neq segundo \implicaLuego escrutinio[j] < escrutinio[segundo]}$ \\
@@ -865,7 +868,6 @@ si j no es igual al segundo, escrutinio[j] $<$ escrutinio[segundo], y en consecu
 \noindent $\equiv (escrutinio[i] > escrutinio[primero]) \lor \\ (escrutinio[i] \leq escrutinio[primero] \land (escrutinio[i] > escrutinio[segundo] \lor \\ escrutinio[i] \leq escrutinio[segundo]))$ \\
 
 \noindent Y, usando la reescritura del invariante del punto 3, tenemos que asumiendo cada caso por separado esta expresion es verdadera y por lo tanto la tripla vale.
-\newpage 
 
 \subsection{3. $Q_C \rightarrow wp(S_2, Asegura)$} \vspace{0.1cm}
 
