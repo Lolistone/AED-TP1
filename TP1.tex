@@ -61,7 +61,6 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \subsection{Ejercicio 3}
 
 \begin{proc}{obtenerSenadoresEnProvincia}{\In escrutinio : \TLista{\ent}}{$\ent \times \ent$}
-	%    \modifica{parametro1, parametro2,..}
 	\requiere{escrutinioValido(escrutinio)}
 	\asegura{(0 \leq res_{0}, res_{1} < |escrutinio| - 1) \yLuego \paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| - 1 \land i \neq res_{0} \land
 	i \neq res_{1} \implicaLuego \\ escrutinio[i] < escrutinio[res_{1}]} \land escrutinio[res_{1}] < escrutinio[res_{0}]} 
@@ -70,18 +69,16 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \subsection{Ejercicio 4}
 
 \begin{proc}{calcularDHontEnProvincia}{\In cant\_bancas : \ent, \In escrutinio : \TLista{\ent}}{\TLista{\TLista{\ent}}}
-	%    \modifica{parametro1, parametro2,..}
 	\requiere{cant\_bancas > 0 \land escrutinioValido(escrutinio)}
 	\asegura{|res| = |escrutinio| - 1 \yLuego \\
-	\paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \yLuego superaUmbral(escrutinio[i]) \implicaLuego |res[i]| =  cant\_bancas} \land \\
-	\paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \yLuego \neg(superaUmbral(escrutinio[i])) \implicaLuego |res[i]| =  0} \land \\
+	\paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \yLuego superaUmbral(escrutinio, i) \implicaLuego |res[i]| =  cant\_bancas} \land \\
+	\paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \yLuego \neg(superaUmbral(escrutinio, i)) \implicaLuego |res[i]| =  0} \land \\
 	\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |res| \yLuego 0 \leq j < |res[i]| \implicaLuego res[i][j] =  escrutinio[i]/(j + 1)}}
 \end{proc}
 
 \subsection{Ejercicio 5}
 
 \begin{proc}{obtenerDiputadosEnProvincia}{\In cant\_bancas : \ent, \In escrutinio : \TLista{\ent} \In DHont : \TLista{\TLista{\ent}}}{\TLista{\ent}}
-	%    \modifica{parametro1, parametro2,..}
 	\requiere{cant\_bancas > 0 \yLuego dHontValida(DHont, cant\_bancas, escrutinio)}
 	\asegura{|res| = |DHont| \yLuego \\ \paraTodo[unalinea]{i}{\ent}{0 \leq i < |res| \implicaLuego res[i] = \sum\limits_{j=0}^{|DHont[i]|-1} \IfThenElse{cant\_bancas > \#cocientesMayores(i, j, DHont)}{1}{0}}}
 	 
@@ -92,7 +89,6 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \vspace{0.1cm}
 
 \begin{proc}{validarListasDiputadosEnProvincia}{\In cant\_bancas : \ent, \In listas : \TLista{\TLista{dni : \ent \times genero : \ent}}}{Bool}
-	%    \modifica{parametro1, parametro2,..}
 	\requiere{cant\_bancas > 0 \land generosValidos(listas)  \land dniValidos(listas)}
 	\asegura{res = True \longleftrightarrow \\
 \paraTodo[unalinea]{i}{\ent}{0 \leq i < |listas| \implicaLuego  |listas[i]|= cant\_bancas} \land \\ 
@@ -102,19 +98,37 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 \subsection{Predicados y Auxiliares}
 
 \aux{porcentaje}{\In partido : {\ent}, \In escrutinio : \TLista{\ent}}{\ent}{(escrutinio[partido] * 100) / totalVotos(escrutinio)}
+
 \aux{\#cocientesMayores}{\In i : \ent, \In j : \ent, \In DHont : \TLista{\TLista{\ent}}}{\ent}{\\ \sum\limits_{k=0}^{|DHont|-1} \sum\limits_{r=0}^{|DHont[k]|-1} \IfThenElse{DHont[k][r] > DHont[i][j]}{1}{0}}
+
 \aux{totalVotos}{\In escrutinio : \TLista{\ent}}{\ent}{\sum\limits_{i=0}^{|escrutinio|-1} escrutinio[i]}
+
 \pred{noHayEmpate}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i,j < |escrutinio| - 1  \land i \neq j  \implicaLuego escrutinio[i] \neq escrutinio[j] }}
+
 \pred{votosValidos}{\In escrutinio : \TLista{\ent}}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |escrutinio| \implicaLuego escrutinio[i] \geq 0 }}
+
 \pred{escrutinioValido}{\In escrutinio : \TLista{\ent}}{|escrutinio| > 2 \land noHayEmpate(escrutinio) \land votosValidos(escrutinio)}
+
 \pred{cocientesDistintos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |DHont| \yLuego 0 \leq j, r < |DHont[i]| \land
 |DHont[i]| = |DHont[k]| \land (i \neq k \lor j \neq r) \implicaLuego 
 DHont[i][j] \neq DHont[k][r]}}
+
 \pred{cocientesPositivos}{\In DHont : \TLista{\TLista{\ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |DHont| \yLuego 0 \leq j < |DHont[i]| \implicaLuego DHont[i][j] \geq 0}}
-\pred{filasValidas}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent}{\paraTodo[unalinea]{i}{\ent}{0 \leq i < |DHont| \yLuego |DHont[i]| > 0  \implicaLuego |DHont[i]| =  cant\_bancas}}
+
+\pred{superaUmbral}{\In escrutinio : \TLista{\ent}, \In i : \ent}{porcentaje(i, escrutinio) > 3}
+
 \pred{dHontValida}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent, \In escrutinio : \TLista{\ent}}{
-|escrutinio| - 1 = |DHont| \land filasValidas(DHont, cant\_bancas) \land cocientesPositivos(DHont) \land cocientesDistintos(DHont)} 
+cocientesPositivos(DHont) \land cocientesDistintos(DHont)  \land seCorresponde(DHont, cant\_bancas, escrutinio) \\ \land escrutinioValido(escrutinio)}
+
+\pred{seCorresponde}{\In DHont : \TLista{\TLista{\ent}}, \In cant\_bancas : \ent, \In escrutinio : \TLista{\ent}}{
+	|escrutinio| - 1 = |DHont| \yLuego \\
+	\paraTodo[unalinea]{i}{\ent}{0 \leq i < |DHont| \yLuego superaUmbral(escrutinio, i) \implicaLuego |DHont[i]| =  cant\_bancas} \land \\
+	\paraTodo[unalinea]{i}{\ent}{0 \leq i < |Dhont| \yLuego \neg(superaUmbral(escrutinio, i)) \implicaLuego |DHont[i]| =  0} \land \\
+	\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |DHont| \yLuego 0 \leq j < |DHont[i]| \implicaLuego DHont[i][j] =  escrutinio[i]/(j + 1)}
+}
+
 \pred{generosValidos}{\In Listas : \TLista{\TLista{\ent \times \ent}}}{\paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |listas| \yLuego 0 \leq j < |listas[i]| \implicaLuego listas[i][j]_{1} = 1 \lor  listas[i][j]_{1} = 2}}
+
 \pred{dniValidos}{\In lista : \TLista{\TLista{\ent \times \ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |lista| \yLuego 0 \leq j, r < |lista[i]| \land
 |lista[i]| = |lista[k]| \land (i \neq k \lor j \neq r) \implicaLuego 
 lista[i][j] \neq lista[k][r]} \land \\ \paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |lista| \yLuego 0 \leq j < |lista[i]| \implicaLuego lista[i][j]_{0} > 0}}
