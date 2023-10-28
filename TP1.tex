@@ -55,7 +55,7 @@ Los predicados y auxiliares utilizados están definidos al final de la sección.
 	%    \modifica{parametro1, parametro2,..}
 	\requiere{|escrutinio\_presidencial| = |escrutinio\_senadores| \land |escrutinio\_senadores| = |escrutinio\_diputados| \land \\
 	escrutinioValido(escrutinio\_presidencial) \land escrutinioValido(escrutinio\_senadores) \\ \land escrutinioValido(escrutinio\_presidencial)}
-	\asegura{res = True \longleftrightarrow \neg (totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senador) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados))}
+	\asegura{res = True \longleftrightarrow \neg (totalVotos(escrutinio\_presidencial) =  totalVotos(escrutinio\_senadores) \land  \\  totalVotos(escrutinio\_senadores) =  totalVotos(escrutinio\_diputados))}
 \end{proc}
 
 \subsection{Ejercicio 3}
