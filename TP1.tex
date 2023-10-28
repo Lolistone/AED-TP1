@@ -131,7 +131,7 @@ cocientesPositivos(DHont) \land cocientesDistintos(DHont)  \land seCorresponde(D
 
 \pred{dniValidos}{\In lista : \TLista{\TLista{\ent \times \ent}}}{\paraTodo[unalinea]{i,j,k,r}{\ent}{0 \leq i,k < |lista| \yLuego 0 \leq j, r < |lista[i]| \land
 |lista[i]| = |lista[k]| \land (i \neq k \lor j \neq r) \implicaLuego 
-lista[i][j] \neq lista[k][r]} \land \\ \paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |lista| \yLuego 0 \leq j < |lista[i]| \implicaLuego lista[i][j]_{0} > 0}}
+lista[i][j]_{0} \neq lista[k][r]_{0} } \land \\ \paraTodo[unalinea]{i,j}{\ent}{0 \leq i < |lista| \yLuego 0 \leq j < |lista[i]| \implicaLuego lista[i][j]_{0} > 0}}
 
 \newpage
 
